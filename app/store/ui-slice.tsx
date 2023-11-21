@@ -1,15 +1,31 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 type UiState = {
-    addFeedbackIsVisible: boolean;
-}
+  addFeedbackIsVisible: boolean;
+  notification: Notification | null;
+};
+
+type Notification = {
+  status: string;
+  title: string;
+  message: string;
+};
+
+let initialNotification: Notification = {
+  status: "",
+  title: "",
+  message: "",
+};
 
 const uiSlice = createSlice({
   name: "ui",
-  initialState: { addFeedbackIsVisible: false } as UiState,
+  initialState: { addFeedbackIsVisible: false, notification: null } as UiState,
   reducers: {
     toggle(state) {
       state.addFeedbackIsVisible = !state.addFeedbackIsVisible;
+    },
+    showNotification(state, action) {
+      state.notification = action.payload
     },
   },
 });

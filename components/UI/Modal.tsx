@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { uiActions } from "@/app/store/ui-slice";
 import { createPortal } from "react-dom";
 import { useRef, useState } from "react";
-import { error } from "console";
+import { feedbackActions } from "@/app/store/feedback-slice";
 
 const Modal = () => {
   const dispatch = useDispatch();
@@ -20,7 +20,7 @@ const Modal = () => {
     dispatch(uiActions.toggle());
   };
 
-  const formSubmissionHandler = (event: React.FormEvent) => {
+  const formSubmissionHandler = async(event: React.FormEvent) => {
     event.preventDefault();
 
     const submissionData = {
@@ -35,7 +35,8 @@ const Modal = () => {
         return;
     }
 
-    console.log(submissionData);
+    // update redux state
+    dispatch(feedbackActions.setFeedbackData(submissionData));
 
     // once submitted, clear the form and close the window
     toggleFeedbackHandler();

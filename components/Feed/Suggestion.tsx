@@ -1,7 +1,6 @@
 import Link from "next/link";
 import data from "../../data.json";
 import ArrowUp from "@/assets/shared/ArrowUp";
-import Illustration from "@/assets/suggestions/Illustration";
 import Comments from "@/assets/shared/Comments";
 
 type Feedback = {
@@ -32,7 +31,6 @@ type Feedback = {
 };
 
 const Suggestion = () => {
-  console.log(data.productRequests);
 
   const allFeedback = data.productRequests;
 
