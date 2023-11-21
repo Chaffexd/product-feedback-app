@@ -2,9 +2,16 @@
 import ArrowDown from "@/assets/shared/ArrowDown";
 import IconSuggestion from "@/assets/suggestions/IconSuggestion";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { uiActions } from "@/app/store/ui-slice";
 
 const SuggestionHeader = () => {
   const [dropdown, setDropdown] = useState<boolean>(false);
+  const dispatch = useDispatch();
+
+  const toggleFeedbackHandler = () => {
+    dispatch(uiActions.toggle())
+  };
 
   const dropdownHandler = () => {
     setDropdown(!dropdown);
@@ -30,7 +37,7 @@ const SuggestionHeader = () => {
           )}
         </div>
       </div>
-      <button className="bg-purple rounded-lg h-12 w-40 hover:">+ Add Feedback</button>
+      <button type="button" className="bg-purple rounded-lg h-12 w-40 hover:" onClick={toggleFeedbackHandler}>+ Add Feedback</button>
     </form>
   );
 };
