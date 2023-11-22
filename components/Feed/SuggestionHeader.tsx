@@ -1,13 +1,15 @@
 "use client";
 import ArrowDown from "@/assets/shared/ArrowDown";
 import IconSuggestion from "@/assets/suggestions/IconSuggestion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { uiActions } from "@/app/store/ui-slice";
+import { useAppSelector } from "@/app/store/hooks";
+import { filterActions } from "@/app/store/filter-slice";
 
 const SuggestionHeader = () => {
   const [dropdown, setDropdown] = useState<boolean>(false);
-  const [selectedFilter, setSelectedFilter] = useState<string>("Most Upvotes")
+  const selectedFilter = useAppSelector((state) => state.filter.selectedFilter)
   const dispatch = useDispatch();
 
   const toggleFeedbackHandler = () => {
@@ -19,10 +21,9 @@ const SuggestionHeader = () => {
   };
 
   const selectFilterHandler = (filter: string) => {
-    setSelectedFilter(filter);
+    dispatch(filterActions.setFilter(filter)); // Updates the filter selection
     setDropdown(false); // Close the dropdown when an item is clicked
   };
-
 
   return (
     <form className="w-full bg-darker-navy h-20 rounded-lg flex justify-between items-center text-white px-4 mb-4">

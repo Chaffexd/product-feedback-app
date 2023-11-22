@@ -2,6 +2,7 @@ import Link from "next/link";
 import data from "../../data.json";
 import ArrowUp from "@/assets/shared/ArrowUp";
 import Comments from "@/assets/shared/Comments";
+import { useAppSelector } from "@/app/store/hooks";
 
 type Feedback = {
   id: number;
@@ -31,12 +32,42 @@ type Feedback = {
 };
 
 const Suggestion = () => {
-
   const allFeedback = data.productRequests;
+  
+  const selectedFilter = useAppSelector((state) => state.filter.selectedFilter);
+  const filteredData = [...allFeedback];
+
+  switch (selectedFilter) {
+    case "Most Upvotes":
+      // filter data by most upvotes
+      filteredData.sort((a, b) => b.upvotes - a.upvotes);
+      break;
+    case "Least Upvotes":
+      // filter by least upvotes
+      filteredData.sort((a, b) => a.upvotes - b.upvotes);
+      break;
+    case "Most Comments":
+      // filter by most comments
+      filteredData.sort(
+        (a, b) => (b.comments?.length || 0) - (a.comments?.length || 0) // 0 as a fallback, there may be no comments
+      );
+      break;
+    case "Least Comments":
+      // filter by least comments
+      filteredData.sort(
+        (a, b) => (a.comments?.length || 0) - (b.comments?.length || 0) // 0 as a fallback, there may be no comments
+      );
+      break;
+    default:
+      // return most upvotes as default
+      filteredData.sort((a, b) => b.upvotes - a.upvotes);
+  }
+
+  console.log(filteredData);
 
   return (
     <>
-      {allFeedback.map((feedback: Feedback) => (
+      {filteredData.map((feedback: Feedback) => (
         <Link href={`${feedback.category}/` + feedback.id} key={feedback.id}>
           <article className="w-full bg-off-white shadow-md p-4 rounded-lg mb-4 flex justify-between items-center">
             <div className="flex">
