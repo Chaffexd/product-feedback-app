@@ -33,9 +33,10 @@ type Feedback = {
 
 const Suggestion = () => {
   const allFeedback = data.productRequests;
-  
+
   const selectedFilter = useAppSelector((state) => state.filter.selectedFilter);
-  const filteredData = [...allFeedback];
+  const selectedCategory = useAppSelector((state) => state.category.selectedCategory);
+  let filteredData = [...allFeedback];
 
   switch (selectedFilter) {
     case "Most Upvotes":
@@ -61,6 +62,10 @@ const Suggestion = () => {
     default:
       // return most upvotes as default
       filteredData.sort((a, b) => b.upvotes - a.upvotes);
+  }
+
+  if (selectedCategory !== 'All') {
+    filteredData = filteredData.filter((data) => data.category === selectedCategory.toLowerCase()) //TLC because button has a capital letter
   }
 
   console.log(filteredData);

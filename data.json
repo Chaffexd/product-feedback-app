@@ -297,6 +297,66 @@
           ]
         }
       ]
+    },
+    {
+      "id": 13,
+      "title": "Add micro-interactions",
+      "category": "ui",
+      "upvotes": 71,
+      "status": "live",
+      "description": "Small animations at specific points can add delight.",
+      "comments": [
+        {
+          "id": 15,
+          "content": "I'd love to see this! It always makes me so happy to see little details like these on websites.",
+          "user": {
+            "image": "./assets/user-images/image-victoria.jpg",
+            "name": "Victoria Mejia",
+            "username": "arlen_the_marlin"
+          },
+          "replies": [
+            {
+              "content": "Me too! I'd also love to see celebrations at specific points as well. It would help people take a moment to celebrate their achievements!",
+              "replyingTo": "arlen_the_marlin",
+              "user": {
+                "image": "./assets/user-images/image-suzanne.jpg",
+                "name": "Suzanne Chang",
+                "username": "upbeat1811"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "title": "Add micro-interactions",
+      "category": "ux",
+      "upvotes": 71,
+      "status": "live",
+      "description": "Small animations at specific points can add delight.",
+      "comments": [
+        {
+          "id": 15,
+          "content": "I'd love to see this! It always makes me so happy to see little details like these on websites.",
+          "user": {
+            "image": "./assets/user-images/image-victoria.jpg",
+            "name": "Victoria Mejia",
+            "username": "arlen_the_marlin"
+          },
+          "replies": [
+            {
+              "content": "Me too! I'd also love to see celebrations at specific points as well. It would help people take a moment to celebrate their achievements!",
+              "replyingTo": "arlen_the_marlin",
+              "user": {
+                "image": "./assets/user-images/image-suzanne.jpg",
+                "name": "Suzanne Chang",
+                "username": "upbeat1811"
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 }

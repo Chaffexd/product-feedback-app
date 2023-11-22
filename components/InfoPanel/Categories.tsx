@@ -1,4 +1,6 @@
+import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import Button from "../UI/Button";
+import { filterActions } from "@/app/store/filter-slice";
 
 const categories = [
   {
@@ -28,10 +30,24 @@ const categories = [
 ];
 
 const Categories = () => {
+  const dispatch = useAppDispatch();
+  const selectedCategory = useAppSelector(
+    (state) => state.category.selectedCategory
+  );
+
+  const handleCategoryClick = (category: string) => {
+    dispatch(filterActions.setCategory(category));
+  };
+
   return (
     <div className="rounded-lg bg-white p-4 h-auto gap-2 mb-4 box-border flex flex-wrap items-center">
       {categories.map((category) => (
-        <Button key={category.id} text={category.buttonText} />
+        <Button
+          key={category.id}
+          text={category.buttonText}
+          onClick={() => handleCategoryClick(category.buttonText)}
+          isActive={selectedCategory === category.buttonText}
+        />
       ))}
     </div>
   );
