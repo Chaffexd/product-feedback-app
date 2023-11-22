@@ -7,9 +7,9 @@ const Illustration = () => {
         <path
           d="M48.73 15.593C25.822 15.59 7.246 34.224 7.235 57.22c-.01 22.997 18.55 41.649 41.458 41.665 22.909.016 41.494-18.61 41.516-41.606a41.72 41.72 0 00-12.132-29.473A41.4 41.4 0 0048.73 15.593z"
           stroke="#3A4374"
-          stroke-width="1.045"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="1.045"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         <ellipse fill="#231F20" cx="70.476" cy="43.691" rx="1.917" ry="2.862" />
         <path
