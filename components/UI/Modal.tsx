@@ -1,4 +1,4 @@
-import { RootState } from "@/app/store";
+import { RootState } from "@/app/store/store";
 import { useSelector, useDispatch } from "react-redux";
 import { uiActions } from "@/app/store/ui-slice";
 import { createPortal } from "react-dom";
@@ -86,7 +86,6 @@ const Modal = () => {
                   <option value="enhancement">Enhancement</option>
                   <option value="ui">UI</option>
                   <option value="bug">Bug</option>
-                  <option value="feature">Feature</option>
                 </select>
               </div>
               <div>

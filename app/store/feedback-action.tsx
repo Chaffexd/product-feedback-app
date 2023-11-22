@@ -1,5 +1,5 @@
 import { Dispatch } from "@reduxjs/toolkit";
-import { uiActions } from "./ui-slice";
+import uiSlice, { uiActions } from "./ui-slice";
 import { feedbackActions } from "./feedback-slice";
 
 type Feedback = {
@@ -20,19 +20,17 @@ export const fetchFeedbackData = () => {
       }
 
       const data = await response.json();
-      console.log(data);
       return data;
     };
 
     try {
       const allFeedback = await fetchFeedback();
-      console.log(allFeedback);
 
       // I need to format the data once it comes back from FB as FB adds its own key
       const formattedFeedback = Object.keys(allFeedback).map((key) => ({
         id: key,
-        ...allFeedback[key]
-      }))
+        ...allFeedback[key],
+      }));
 
       dispatch(
         feedbackActions.replaceFeedbackData({
@@ -80,12 +78,18 @@ export const sendNewFeedback = (feedback: Feedback) => {
           message: "Successfully shared your feedback",
         })
       );
+
+      // remove the banner after 2 secs
+      setTimeout(() => {
+        dispatch(uiActions.hideNotification());
+      }, 2000);
+
     } catch (error) {
       dispatch(
         uiActions.showNotification({
           status: "error",
           title: "Error",
-          message: "Sending cart data failed.",
+          message: "Sending feedback failed.",
         })
       );
     }

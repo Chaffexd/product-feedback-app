@@ -11,12 +11,6 @@ type Notification = {
   message: string;
 };
 
-let initialNotification: Notification = {
-  status: "",
-  title: "",
-  message: "",
-};
-
 const uiSlice = createSlice({
   name: "ui",
   initialState: { addFeedbackIsVisible: false, notification: null } as UiState,
@@ -25,7 +19,10 @@ const uiSlice = createSlice({
       state.addFeedbackIsVisible = !state.addFeedbackIsVisible;
     },
     showNotification(state, action) {
-      state.notification = action.payload
+      state.notification = action.payload;
+    },
+    hideNotification(state) {
+      state.notification = null;
     },
   },
 });
