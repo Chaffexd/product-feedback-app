@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 type UiState = {
   addFeedbackIsVisible: boolean;
   notification: Notification | null;
+  isLoading: boolean;
 };
 
 type Notification = {
@@ -13,7 +14,7 @@ type Notification = {
 
 const uiSlice = createSlice({
   name: "ui",
-  initialState: { addFeedbackIsVisible: false, notification: null } as UiState,
+  initialState: { addFeedbackIsVisible: false, notification: null, isLoading: true } as UiState,
   reducers: {
     toggle(state) {
       state.addFeedbackIsVisible = !state.addFeedbackIsVisible;
@@ -24,6 +25,12 @@ const uiSlice = createSlice({
     hideNotification(state) {
       state.notification = null;
     },
+    startLoading(state) {
+      state.isLoading = true;
+    },
+    stopLoading(state) {
+      state.isLoading = false;
+    }
   },
 });
 

@@ -5,6 +5,10 @@ import { createPortal } from "react-dom";
 import { useRef, useState } from "react";
 import { feedbackActions } from "@/app/store/feedback-slice";
 
+const generateRandomID = () => {
+  return Math.floor(Math.random() * Date.now());
+}
+
 const Modal = () => {
   const dispatch = useDispatch();
   const titleRef = useRef<HTMLInputElement>(null);
@@ -23,10 +27,15 @@ const Modal = () => {
   const formSubmissionHandler = async(event: React.FormEvent) => {
     event.preventDefault();
 
+    // titleRef.current?.value.trim() might be undefined according to TS
+    // ?? provides a value if the left side might be null or undefined, it also stops TS complaining
     const submissionData = {
-      title: titleRef.current?.value.trim(),
-      category: categoryRef.current?.value.trim(),
-      description: descriptionRef.current?.value.trim(),
+      id: generateRandomID(),
+      title: titleRef.current?.value.trim() ?? '',
+      category: categoryRef.current?.value.trim() ?? '',
+      description: descriptionRef.current?.value.trim() ?? '',
+      upvotes: 0,
+      status: "pending"
     };
 
     if (submissionData.title === '' || submissionData.description === '') {

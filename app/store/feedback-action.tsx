@@ -1,5 +1,5 @@
 import { Dispatch } from "@reduxjs/toolkit";
-import uiSlice, { uiActions } from "./ui-slice";
+import { uiActions } from "./ui-slice";
 import { feedbackActions } from "./feedback-slice";
 
 type Feedback = {
@@ -10,6 +10,8 @@ type Feedback = {
 
 export const fetchFeedbackData = () => {
   return async (dispatch: Dispatch) => {
+    dispatch(uiActions.startLoading());
+
     const fetchFeedback = async () => {
       const response = await fetch(
         "https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests.json"
@@ -38,12 +40,13 @@ export const fetchFeedbackData = () => {
       );
     } catch (error) {
       // deal with error
+    } finally {
+      dispatch(uiActions.stopLoading());
     }
   };
 };
 
 export const sendNewFeedback = (feedback: Feedback) => {
-  console.log(feedback);
   return async (dispatch: Dispatch) => {
     dispatch(
       uiActions.showNotification({
@@ -55,7 +58,7 @@ export const sendNewFeedback = (feedback: Feedback) => {
 
     const sendRequest = async () => {
       const response = await fetch(
-        "https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/feedback.json",
+        "https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests.json",
         {
           method: "POST",
           body: JSON.stringify(feedback),

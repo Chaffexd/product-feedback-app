@@ -1,5 +1,14 @@
+"use client";
+import RoadmapHeader from "@/components/RoadmapPanel/RoadmapHeader";
+import Modal from "@/components/UI/Modal";
+
 const RoadMapPage = () => {
-  return <h1>This is the roadmap page</h1>;
+  return (
+    <>
+      <Modal />
+      <RoadmapHeader />
+    </>
+  );
 };
 
 export default RoadMapPage;
