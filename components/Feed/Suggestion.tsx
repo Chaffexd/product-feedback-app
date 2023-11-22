@@ -1,78 +1,58 @@
 import Link from "next/link";
-import data from "../../data.json";
 import ArrowUp from "@/assets/shared/ArrowUp";
 import Comments from "@/assets/shared/Comments";
-import { useAppSelector } from "@/app/store/hooks";
-
-type Feedback = {
-  id: number;
-  title: string;
-  category: string;
-  upvotes: number;
-  status: string;
-  description: string;
-  comments?: {
-    id: number;
-    content: string;
-    user: {
-      image: string;
-      name: string;
-      username: string;
-    };
-    replies?: {
-      content: string;
-      replyingTo: string;
-      user: {
-        image: string;
-        name: string;
-        username: string;
-      };
-    }[];
-  }[];
-};
+import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
+import { Feedback } from "../Models/models";
+import { filterActions } from "@/app/store/filter-slice";
+import { useEffect } from "react";
 
 const Suggestion = () => {
-  const allFeedback = data.productRequests;
+  const dispatch = useAppDispatch();
+  const allFeedback = useAppSelector((state) => state.feedback.feedback);
 
   const selectedFilter = useAppSelector((state) => state.filter.selectedFilter);
   const selectedCategory = useAppSelector((state) => state.category.selectedCategory);
-  let filteredData = [...allFeedback];
+  let sortedData = [...allFeedback];
 
   switch (selectedFilter) {
     case "Most Upvotes":
       // filter data by most upvotes
-      filteredData.sort((a, b) => b.upvotes - a.upvotes);
+      sortedData.sort((a, b) => b.upvotes - a.upvotes);
       break;
     case "Least Upvotes":
       // filter by least upvotes
-      filteredData.sort((a, b) => a.upvotes - b.upvotes);
+      sortedData.sort((a, b) => a.upvotes - b.upvotes);
       break;
     case "Most Comments":
       // filter by most comments
-      filteredData.sort(
+      sortedData.sort(
         (a, b) => (b.comments?.length || 0) - (a.comments?.length || 0) // 0 as a fallback, there may be no comments
       );
       break;
     case "Least Comments":
       // filter by least comments
-      filteredData.sort(
+      sortedData.sort(
         (a, b) => (a.comments?.length || 0) - (b.comments?.length || 0) // 0 as a fallback, there may be no comments
       );
       break;
     default:
       // return most upvotes as default
-      filteredData.sort((a, b) => b.upvotes - a.upvotes);
+      sortedData.sort((a, b) => b.upvotes - a.upvotes);
   }
 
   if (selectedCategory !== 'All') {
-    filteredData = filteredData.filter((data) => data.category === selectedCategory.toLowerCase()) //TLC because button has a capital letter
+    sortedData = sortedData.filter((data) => data.category === selectedCategory.toLowerCase()) //TLC because button has a capital letter
   }
 
-  console.log(filteredData);
+  useEffect(() => {
+    dispatch(filterActions.setCategory(selectedCategory))
+    dispatch(filterActions.setFilter(selectedFilter))
+    dispatch(filterActions.updateFilteredFeedback(sortedData))
+  }, [dispatch, selectedCategory, selectedFilter, sortedData])
 
   return (
     <>
-      {filteredData.map((feedback: Feedback) => (
+      {sortedData.map((feedback: Feedback) => (
         <Link href={`${feedback.category}/` + feedback.id} key={feedback.id}>
           <article className="w-full bg-off-white shadow-md p-4 rounded-lg mb-4 flex justify-between items-center">
             <div className="flex">

@@ -1,14 +1,8 @@
+import { Feedback } from "@/components/Models/models";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-// the type definition for what we expect
-type FeedbackItem = {
-  title?: string;
-  category?: string;
-  description?: string;
-};
-
 type FeedbackState = {
-    feedback: FeedbackItem[];
+    feedback: Feedback[];
     changed: boolean
 }
 
@@ -25,7 +19,7 @@ const feedbackSlice = createSlice({
   reducers: {
     setFeedbackData: (
       state,
-      action: PayloadAction<FeedbackItem>
+      action: PayloadAction<Feedback>
     ) => {
       state.feedback.push(action.payload)
       state.changed = true;

@@ -12,7 +12,7 @@ export const fetchFeedbackData = () => {
   return async (dispatch: Dispatch) => {
     const fetchFeedback = async () => {
       const response = await fetch(
-        "https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/feedback.json"
+        "https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests.json"
       );
 
       if (!response.ok) {
@@ -25,7 +25,6 @@ export const fetchFeedbackData = () => {
 
     try {
       const allFeedback = await fetchFeedback();
-
       // I need to format the data once it comes back from FB as FB adds its own key
       const formattedFeedback = Object.keys(allFeedback).map((key) => ({
         id: key,
