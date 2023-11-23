@@ -16,7 +16,7 @@ export default function Home() {
   const notification = useAppSelector(
     (state: RootState) => state.ui.notification
   );
-  //console.log(feedback.feedback);
+  console.log(feedback.feedback);
 
   useEffect(() => {
     if (isInitialPageLoad) {

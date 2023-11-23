@@ -1,5 +1,5 @@
+import FeedbackItem from "@/components/Feed/FeedbackItem";
 import FeedbackItemHeader from "@/components/Feed/FeedbackItemHeader";
-import { Feedback } from "@/components/Models/models";
 
 export async function generateStaticParams() {
   const response = await fetch(
@@ -7,7 +7,7 @@ export async function generateStaticParams() {
   );
 
   if (!response.ok) {
-    throw new Error("Failed to generate params")
+    throw new Error("Failed to generate params");
   }
 
   const feedbackItems = await response.json();
@@ -17,19 +17,36 @@ export async function generateStaticParams() {
   // joining the object with the id
   const formattedFeedbackItems = Object.keys(feedbackItems).map((key) => ({
     id: key,
-    ...feedbackItems[key]
-  }))
+    ...feedbackItems[key],
+  }));
 
   // next js requires the ID to be a string, so we're converting it for the sake of URL
   return formattedFeedbackItems.map((item) => ({
-    feedbackId: item.id.toString()
+    feedbackId: item.id.toString(),
   }));
 }
 
-const FeedbackDetailPage = ({ params }: { params: { feedbackId: number } }) => {
+export async function generateMetadata({ params }: { params: { feedbackId: number }}) {
+    const id = params.feedbackId;
+
+    const feedbackItem = await fetch(`https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests/${id}.json`);
+    const metadata = await feedbackItem.json();
+
+    return {
+        title: metadata.title,
+        description: metadata.description
+    }
+}
+
+const FeedbackDetailPage = ({ params }: { params: { feedbackId: number }}) => {
+  const feedbackId = params.feedbackId;
+
   return (
     <main className="w-full">
       <FeedbackItemHeader />
+      <FeedbackItem 
+        feedbackId={feedbackId}
+      />
     </main>
   );
 };
