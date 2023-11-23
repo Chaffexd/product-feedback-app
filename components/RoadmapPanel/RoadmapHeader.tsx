@@ -1,6 +1,8 @@
-
+"use client";
 import { useAppDispatch } from "@/app/store/hooks";
 import { uiActions } from "@/app/store/ui-slice";
+import ArrowLeft from "@/assets/shared/ArrowLeft";
+import Link from "next/link";
 
 const RoadmapHeader = () => {
   const dispatch = useAppDispatch();
@@ -8,11 +10,11 @@ const RoadmapHeader = () => {
   const toggleFeedbackHandler = () => {
     dispatch(uiActions.toggle());
   };
-  
+
   return (
     <form className="w-full bg-darker-navy h-20 rounded-lg flex justify-between items-center text-white px-4 mb-4">
       <div>
-        <button>Go back</button>
+        <Link href={"/"} className="flex items-center"><ArrowLeft /><span className="ml-2">Go back</span></Link>
         <h1 className="font-bold">Roadmap</h1>
       </div>
       <button
