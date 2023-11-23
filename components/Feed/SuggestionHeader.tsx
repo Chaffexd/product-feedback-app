@@ -25,13 +25,14 @@ const SuggestionHeader = () => {
     setDropdown(false); // Close the dropdown when an item is clicked
   };
 
+
   return (
     <form className="w-full bg-darker-navy h-20 rounded-lg flex justify-between items-center text-white px-4 mb-4">
       <div className="flex items-center">
         <i className="mr-4">
           <IconSuggestion />
         </i>
-        <h1 className="font-bold mr-4">{feedback} Suggestions</h1>
+        <h1 className="font-bold mr-4">{feedback} {feedback === 1 ? 'Suggestion' : 'Suggestions'}</h1>
         <div className="flex">
           <p className="mr-4">Sort by: </p>
           <button

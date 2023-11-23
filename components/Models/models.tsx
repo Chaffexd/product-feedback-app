@@ -1,5 +1,6 @@
 export type Feedback = {
   id: number;
+  key?: number;
   title: string;
   category: string;
   upvotes: number;

@@ -9,7 +9,6 @@ type RoadmapFeedbackItem = {
 };
 
 const RoadmapFeedbackItem = ({ feedback }: RoadmapFeedbackItem) => {
-  console.log(feedback);
   const status =
     feedback.status.charAt(0).toUpperCase() + feedback.status.slice(1);
   return (

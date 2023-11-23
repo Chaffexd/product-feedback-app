@@ -88,7 +88,7 @@ const Suggestion = () => {
                 <i>
                   <Comments />
                 </i>
-                <p className="pl-2">{feedback.comments?.length}</p>
+                <p className="pl-2">{feedback.comments?.length === undefined ? 0 : feedback.comments?.length}</p>
               </div>
             </article>
           </Link>

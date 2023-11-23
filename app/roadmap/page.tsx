@@ -10,7 +10,8 @@ import { fetchFeedbackData } from "../store/feedback-action";
 const RoadMapPage = () => {
   const dispatch = useAppDispatch();
   const data = useAppSelector((state: RootState) => state.feedback.feedback);
-  console.log(data);
+  // this will determine whether or not it needs to fetch up to date data
+  const isInitialPageLoad = useAppSelector((state: RootState) => state.ui.isInitialPageLoad);
 
   // this will return an array of objects that hold status so we can map them out in Roadmap
   const plannedFeedback = data.filter(feedback => feedback.status === 'planned');
@@ -19,9 +20,13 @@ const RoadMapPage = () => {
 
   useEffect(() => {
     // run on page load
-    dispatch(fetchFeedbackData());
+    if(isInitialPageLoad) {
+      dispatch(fetchFeedbackData());
 
-  }, [])
+      return;
+    }
+
+  }, [dispatch, isInitialPageLoad])
 
   return (
     <section className="w-full">

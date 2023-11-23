@@ -7,11 +7,11 @@ import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { RootState } from "./store/store";
 import { useEffect } from "react";
 import { sendNewFeedback, fetchFeedbackData } from "./store/feedback-action";
-
-let initialPageLoad = true;
+import { uiActions } from "./store/ui-slice";
 
 export default function Home() {
   const dispatch = useAppDispatch();
+  const isInitialPageLoad = useAppSelector((state: RootState) => state.ui.isInitialPageLoad);
   const feedback = useAppSelector((state: RootState) => state.feedback);
   const notification = useAppSelector(
     (state: RootState) => state.ui.notification
@@ -19,9 +19,9 @@ export default function Home() {
   //console.log(feedback.feedback);
 
   useEffect(() => {
-    if (initialPageLoad) {
+    if (isInitialPageLoad) {
       dispatch(fetchFeedbackData());
-      initialPageLoad = false;
+      dispatch(uiActions.initialPageLoad(false));
       return;
     }
 
@@ -33,7 +33,7 @@ export default function Home() {
         sendNewFeedback(feedback.feedback[feedback.feedback.length - 1])
       );
     }
-  }, [feedback, dispatch]);
+  }, [feedback, dispatch, isInitialPageLoad]);
 
   return (
     <>
