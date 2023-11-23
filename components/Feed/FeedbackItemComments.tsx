@@ -1,14 +1,27 @@
 import Image from "next/image";
 import { Feedback } from "../Models/models";
+import FeedbackCommentReply from "./FeedbackCommentReply";
+import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
+import { RootState } from "@/app/store/store";
+import { uiActions } from "@/app/store/ui-slice";
 
 type CommentsProps = {
   comments: Feedback[];
 };
 
 const FeedbackItemComments = ({ comments }: CommentsProps) => {
-  console.log(
-    comments.map((comment) => comment.comments?.map((com) => com.content))
+  const dispatch = useAppDispatch();
+
+  const initialPostUser = comments[0]?.comments?.map(
+    (eachComment) => eachComment.user.username
   );
+  console.log(initialPostUser); // ["hexagon.bestagon", "hummingbird1"]
+  // check in the array if it includes the users name
+  const isReplying = useAppSelector(
+    (state: RootState) => state.ui.replyingUsername
+  );
+
+  console.log(isReplying);
 
   return (
     <section className="bg-white w-full rounded-lg shadow-md p-8 mb-12">
@@ -16,7 +29,11 @@ const FeedbackItemComments = ({ comments }: CommentsProps) => {
         {comments[0]?.comments?.length || 0} Comments
       </h1>
       {comments[0]?.comments?.map((eachComment) => (
-        <article className="border-b-2 border-grey">
+        <article
+          className={`border-b-2 border-grey ${
+            eachComment.replies ? "border-b-2 border-grey mt-4" : ""
+          }`}
+        >
           <div className="w-full pt-6 flex pb-4">
             <Image
               src={eachComment.user.image || ""}
@@ -32,12 +49,44 @@ const FeedbackItemComments = ({ comments }: CommentsProps) => {
                 </h2>
                 <h3 className="text-slate">@{eachComment.user.username}</h3>
               </div>
-              <button className="font-bold text-navy">Reply</button>
+              <button
+                className="font-bold text-navy"
+                onClick={() =>
+                  dispatch(uiActions.isReplying(eachComment.user.username))
+                }
+              >
+                Reply
+              </button>
             </div>
           </div>
-          <div className="pb-8">
-            <p className="text-slate pl-20 -ml-2">{eachComment.content}</p>
+          <div
+            className={`pb-8 ${
+              eachComment.replies ? "border-l-2 border-grey ml-6" : ""
+            }`}
+          >
+            <p
+              className={`text-slate pl-20 -ml-2 ${
+                eachComment.replies ? "!-ml-8" : ""
+              }`}
+            >
+              {eachComment.content}
+            </p>
           </div>
+          {isReplying === eachComment.user.username && (
+            <div className={`w-full flex h-22 pt-2 gap-4 justify-between pb-4 pl-16`}>
+              <textarea
+                className="bg-off-white p-4 w-5/6 rounded-lg"
+                required
+                placeholder="Type your response here"
+              />
+              <button className="bg-purple text-white rounded-lg h-12 w-28">
+                Post Reply
+              </button>
+            </div>
+          )}
+          {eachComment.replies?.map((reply) => (
+            <FeedbackCommentReply key={reply.user.name} reply={reply} />
+          ))}
         </article>
       ))}
     </section>

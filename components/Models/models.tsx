@@ -25,3 +25,14 @@ export type Feedback = {
     }[];
   }[];
 };
+
+export type Reply = {
+  user: {
+    image: string;
+    name: string;
+    username: string;
+  };
+  content: string;
+  replyingTo?: string;
+  replies?: Reply[];
+};
