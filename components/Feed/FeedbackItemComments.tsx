@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { RootState } from "@/app/store/store";
 import { uiActions } from "@/app/store/ui-slice";
 import { feedbackActions } from "@/app/store/feedback-slice";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 type CommentsProps = {
   comments: Feedback[];

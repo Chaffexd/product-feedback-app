@@ -1,5 +1,6 @@
 import FeedbackItem from "@/components/Feed/FeedbackItem";
 import FeedbackItemHeader from "@/components/Feed/FeedbackItemHeader";
+import NewComment from "@/components/Feed/NewComment";
 
 export async function generateStaticParams() {
   const response = await fetch(
@@ -47,6 +48,7 @@ const FeedbackDetailPage = ({ params }: { params: { feedbackId: number }}) => {
       <FeedbackItem 
         feedbackId={feedbackId}
       />
+      <NewComment />
     </main>
   );
 };
