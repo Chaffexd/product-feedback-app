@@ -1,3 +1,24 @@
+export type Reply = {
+  content: string;
+  replyingTo: string;
+  user: {
+    image: string;
+    name: string;
+    username: string;
+  };
+};
+
+export type Comment = {
+  id: number;
+  content: string;
+  user: {
+    image: string;
+    name: string;
+    username: string;
+  };
+  replies?: Reply[];
+};
+
 export type Feedback = {
   id: number;
   key?: number;
@@ -6,33 +27,7 @@ export type Feedback = {
   upvotes: number;
   status: string;
   description: string;
-  comments?: {
-    id: number;
-    content: string;
-    user: {
-      image: string;
-      name: string;
-      username: string;
-    };
-    replies?: {
-      content: string;
-      replyingTo: string;
-      user: {
-        image: string;
-        name: string;
-        username: string;
-      };
-    }[];
-  }[];
+  comments?: Comment[];
 };
 
-export type Reply = {
-  user: {
-    image: string;
-    name: string;
-    username: string;
-  };
-  content: string;
-  replyingTo?: string;
-  replies?: Reply[];
-};
+export type CommentOrReply = Comment | Reply;

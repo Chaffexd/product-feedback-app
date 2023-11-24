@@ -4,24 +4,23 @@ import FeedbackCommentReply from "./FeedbackCommentReply";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { RootState } from "@/app/store/store";
 import { uiActions } from "@/app/store/ui-slice";
+import { feedbackActions } from "@/app/store/feedback-slice";
+import { useRef } from "react";
 
 type CommentsProps = {
   comments: Feedback[];
 };
 
 const FeedbackItemComments = ({ comments }: CommentsProps) => {
+  const currentState = useAppSelector((state) => state.feedback.feedback);
   const dispatch = useAppDispatch();
+  const newCommentRef = useRef<HTMLTextAreaElement>(null);
 
-  const initialPostUser = comments[0]?.comments?.map(
-    (eachComment) => eachComment.user.username
-  );
-  console.log(initialPostUser); // ["hexagon.bestagon", "hummingbird1"]
+  // console.log(initialPostUser); // ["hexagon.bestagon", "hummingbird1"]
   // check in the array if it includes the users name
   const isReplying = useAppSelector(
     (state: RootState) => state.ui.replyingUsername
   );
-
-  console.log(isReplying);
 
   return (
     <section className="bg-white w-full rounded-lg shadow-md p-8 mb-12">
@@ -30,6 +29,7 @@ const FeedbackItemComments = ({ comments }: CommentsProps) => {
       </h1>
       {comments[0]?.comments?.map((eachComment) => (
         <article
+          key={eachComment.id}
           className={`border-b-2 border-grey ${
             eachComment.replies ? "border-b-2 border-grey mt-4" : ""
           }`}
@@ -73,13 +73,40 @@ const FeedbackItemComments = ({ comments }: CommentsProps) => {
             </p>
           </div>
           {isReplying === eachComment.user.username && (
-            <div className={`w-full flex h-22 pt-2 gap-4 justify-between pb-4 pl-16`}>
+            <div
+              className={`w-full flex h-22 pt-2 gap-4 justify-between pb-4 pl-16`}
+            >
               <textarea
                 className="bg-off-white p-4 w-5/6 rounded-lg"
                 required
                 placeholder="Type your response here"
+                ref={newCommentRef}
               />
-              <button className="bg-purple text-white rounded-lg h-12 w-28">
+              <button
+                className="bg-purple text-white rounded-lg h-12 w-28"
+                onClick={() => {
+                  const newCommentContent = newCommentRef.current?.value;
+                  const userComment = {
+                    currentState: currentState,
+                    index: comments,
+                    currentPost: eachComment,
+                    newComment: {
+                      content: newCommentContent,
+                      replyingTo: eachComment.user.username,
+                      // this should be the current user
+                      user: {
+                        image: "",
+                        name: "Current User",
+                        username: "Current User",
+                      },
+                    },
+                  };
+                  // console.log(newComment);
+                  dispatch(feedbackActions.updateComment(userComment));
+                  // this still works, fix the error
+                  newCommentRef.current.value = "";
+                }}
+              >
                 Post Reply
               </button>
             </div>

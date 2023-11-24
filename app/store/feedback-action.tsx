@@ -97,3 +97,55 @@ export const sendNewFeedback = (feedback: Feedback) => {
     }
   };
 };
+
+export const updateFeedbackInDatabase = (updatedFeedback: Feedback) => {
+  return async (dispatch: Dispatch) => {
+    dispatch(
+      uiActions.showNotification({
+        status: "pending",
+        title: "Updating",
+        message: "Updating your feedback...",
+      })
+    );
+
+    const updateRequest = async () => {
+      const response = await fetch(
+        `https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests/${updatedFeedback}.json`,
+        {
+          method: "PUT",
+          body: JSON.stringify(updatedFeedback),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Updating feedback failed :( ");
+      }
+    };
+
+    try {
+      await updateRequest();
+
+      dispatch(
+        uiActions.showNotification({
+          status: "success",
+          title: "Success!",
+          message: "Successfully updated your feedback",
+        })
+      );
+
+      // remove the banner after 2 secs
+      setTimeout(() => {
+        dispatch(uiActions.hideNotification());
+      }, 2000);
+
+    } catch (error) {
+      dispatch(
+        uiActions.showNotification({
+          status: "error",
+          title: "Error",
+          message: "Updating feedback failed.",
+        })
+      );
+    }
+  };
+};
