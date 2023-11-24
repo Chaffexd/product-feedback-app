@@ -1,6 +1,7 @@
 import { Dispatch } from "@reduxjs/toolkit";
 import { uiActions } from "./ui-slice";
 import { feedbackActions } from "./feedback-slice";
+import { Comment } from "@/components/Models/models";
 
 type Feedback = {
   title?: string;
@@ -85,7 +86,6 @@ export const sendNewFeedback = (feedback: Feedback) => {
       setTimeout(() => {
         dispatch(uiActions.hideNotification());
       }, 2000);
-
     } catch (error) {
       dispatch(
         uiActions.showNotification({
@@ -98,54 +98,24 @@ export const sendNewFeedback = (feedback: Feedback) => {
   };
 };
 
-export const updateFeedbackInDatabase = (updatedFeedback: Feedback) => {
-  return async (dispatch: Dispatch) => {
-    dispatch(
-      uiActions.showNotification({
-        status: "pending",
-        title: "Updating",
-        message: "Updating your feedback...",
-      })
+export const updateCommentInDatabase = async (postId: number, updatedComments: Comment[]) => {
+  try {
+    const response = await fetch(
+      `https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests/${postId}.json`,
+      {
+        method: 'PATCH', 
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ comments: updatedComments }),
+      }
     );
 
-    const updateRequest = async () => {
-      const response = await fetch(
-        `https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests/${updatedFeedback}.json`,
-        {
-          method: "PUT",
-          body: JSON.stringify(updatedFeedback),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Updating feedback failed :( ");
-      }
-    };
-
-    try {
-      await updateRequest();
-
-      dispatch(
-        uiActions.showNotification({
-          status: "success",
-          title: "Success!",
-          message: "Successfully updated your feedback",
-        })
-      );
-
-      // remove the banner after 2 secs
-      setTimeout(() => {
-        dispatch(uiActions.hideNotification());
-      }, 2000);
-
-    } catch (error) {
-      dispatch(
-        uiActions.showNotification({
-          status: "error",
-          title: "Error",
-          message: "Updating feedback failed.",
-        })
-      );
+    if (!response.ok) {
+      throw new Error('Failed to update database');
     }
-  };
+  } catch (error) {
+    console.error('Error updating database:', error);
+    throw error;
+  }
 };

@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { RootState } from "@/app/store/store";
 import { uiActions } from "@/app/store/ui-slice";
 import { feedbackActions } from "@/app/store/feedback-slice";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 type CommentsProps = {
   comments: Feedback[];
@@ -51,9 +51,9 @@ const FeedbackItemComments = ({ comments }: CommentsProps) => {
               </div>
               <button
                 className="font-bold text-navy"
-                onClick={() =>
-                  dispatch(uiActions.isReplying(eachComment.user.username))
-                }
+                onClick={() => {
+                  dispatch(uiActions.isReplying(eachComment.user.username));
+                }}
               >
                 Reply
               </button>
@@ -101,10 +101,10 @@ const FeedbackItemComments = ({ comments }: CommentsProps) => {
                       },
                     },
                   };
-                  // console.log(newComment);
+
                   dispatch(feedbackActions.updateComment(userComment));
-                  // this still works, fix the error
-                  newCommentRef.current.value = "";
+                  dispatch(uiActions.isReplying(null))
+                  newCommentRef.current!.value = "";
                 }}
               >
                 Post Reply

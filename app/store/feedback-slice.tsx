@@ -1,5 +1,6 @@
 import { Comment, Feedback } from "@/components/Models/models";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
+import { updateCommentInDatabase } from "./feedback-action";
 
 type FeedbackState = {
   feedback: Feedback[];
@@ -12,7 +13,6 @@ const initialState: FeedbackState = {
   changed: false,
 };
 
-// slice
 const feedbackSlice = createSlice({
   name: "feedback",
   initialState,
@@ -28,41 +28,6 @@ const feedbackSlice = createSlice({
       state.feedback = [];
       state.changed = true;
     },
-    /* updateComment: (state, action) => {
-      console.log(action.payload);
-      const { newComment, currentPost, index, currentState } = action.payload;
-      console.log('CURRENT POST ID', index[0].id); // index in database
-      console.log('CURRENT POST', currentPost);
-      console.log('CURRENT NEW COMMENT', newComment);
-      console.log('CURRENT STATE', currentState)
-
-      const findPostData = index[0].id - 1;
-      // console.log(currentState[findPostData])
-      const stateToUpdate = currentState[findPostData];
-
-      if (currentPost && Array.isArray(currentPost.replies)) {
-        console.log(`Current post has replies`);
-        const commentToUpdateIndex = stateToUpdate.comments.findIndex(comment => comment.id === currentPost.id);
-
-        const updateComment = action.payload.currentPost = {
-          ...currentPost,
-          replies: [...currentPost.replies, newComment]
-        };
-        // must find which comment to update
-        stateToUpdate.comments[0][updateComment]
-       
-      } else {
-        console.log(`Current post does not have any replies`);
-
-        const updateComment = action.payload.currentPost = {
-          ...currentPost,
-          replies: [newComment]
-        }
-        
-        stateToUpdate.comments.
-      }
-
-    }, */
     updateComment: (state, action) => {
       const { newComment, currentPost, index, currentState } = action.payload;
       const findPostData = index[0].id - 1;
@@ -117,18 +82,22 @@ const feedbackSlice = createSlice({
     
         // Update the cloned state with the modified comments array
         stateToUpdate.comments = updatedComments;
+        console.log("UPDATEDCOMMENTS", updatedComments)
       }
     
       // Update the cloned state array
       updatedState[findPostData] = stateToUpdate;
     
-      // Update the state in an immutable way
+      console.log("UPDATED STATE=====", updatedState)
+      // Update the state in an immutable way LOCALLY
       state.feedback = updatedState;
       state.changed = true;
+
+      // update the database at the same time
+      updateCommentInDatabase(findPostData, updatedState[findPostData].comments)
     },
-/*  */    
   },
 });
 
-export const feedbackActions = feedbackSlice.actions;
+export const feedbackActions = { ...feedbackSlice.actions };
 export default feedbackSlice;

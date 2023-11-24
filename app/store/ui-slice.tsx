@@ -16,7 +16,7 @@ type Notification = {
 
 const uiSlice = createSlice({
   name: "ui",
-  initialState: { addFeedbackIsVisible: false, notification: null, isLoading: true, isInitialPageLoad: true, replyingUsername: 'null' } as UiState,
+  initialState: { addFeedbackIsVisible: false, notification: null, isLoading: true, isInitialPageLoad: true, replyingUsername: 'null', } as UiState,
   reducers: {
     toggle(state) {
       state.addFeedbackIsVisible = !state.addFeedbackIsVisible;
@@ -38,7 +38,7 @@ const uiSlice = createSlice({
     },
     isReplying(state, action) {
       state.replyingUsername = action.payload
-    }
+    },
   },
 });
 
