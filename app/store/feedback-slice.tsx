@@ -28,38 +28,105 @@ const feedbackSlice = createSlice({
       state.feedback = [];
       state.changed = true;
     },
-    updateComment: (state, action) => {
+    /* updateComment: (state, action) => {
       console.log(action.payload);
-      const { userComment, currentPost, index, currentState } = action.payload;
-      console.log(index[0].id); // index in database
-      console.log(currentPost);
-      console.log(userComment);
+      const { newComment, currentPost, index, currentState } = action.payload;
+      console.log('CURRENT POST ID', index[0].id); // index in database
+      console.log('CURRENT POST', currentPost);
+      console.log('CURRENT NEW COMMENT', newComment);
+      console.log('CURRENT STATE', currentState)
 
-      const postToUpdateIndex = currentState.findIndex((post) => post.id === index[0].id);
-      console.log(postToUpdateIndex)
-      // const postIndex = state.feedback.findIndex(
-      //  (post) => post.id === index[0].id
-      // );
+      const findPostData = index[0].id - 1;
+      // console.log(currentState[findPostData])
+      const stateToUpdate = currentState[findPostData];
 
       if (currentPost && Array.isArray(currentPost.replies)) {
         console.log(`Current post has replies`);
+        const commentToUpdateIndex = stateToUpdate.comments.findIndex(comment => comment.id === currentPost.id);
 
-        action.payload.currentPost = {
+        const updateComment = action.payload.currentPost = {
           ...currentPost,
-          replies: [...currentPost.replies, userComment]
-        }
+          replies: [...currentPost.replies, newComment]
+        };
+        // must find which comment to update
+        stateToUpdate.comments[0][updateComment]
        
       } else {
         console.log(`Current post does not have any replies`);
 
-        action.payload.currentPost = {
+        const updateComment = action.payload.currentPost = {
           ...currentPost,
-          replies: [userComment]
+          replies: [newComment]
         }
         
+        stateToUpdate.comments.
       }
 
+    }, */
+    updateComment: (state, action) => {
+      const { newComment, currentPost, index, currentState } = action.payload;
+      const findPostData = index[0].id - 1;
+    
+      // Clone the currentState array
+      const updatedState = currentState.slice();
+    
+      // Clone the state to update
+      const stateToUpdate = { ...updatedState[findPostData] };
+    
+      if (currentPost && Array.isArray(currentPost.replies)) {
+        console.log(`Current post has replies`);
+    
+        const commentToUpdateIndex = stateToUpdate.comments.findIndex(
+          (comment: Comment) => comment.id === currentPost.id
+        );
+    
+        // Clone the comment and update the replies
+        const updatedComment = {
+          ...stateToUpdate.comments[commentToUpdateIndex],
+          replies: [...stateToUpdate.comments[commentToUpdateIndex].replies, newComment],
+        };
+    
+        // Clone the comments array and update the comment
+        const updatedComments = [
+          ...stateToUpdate.comments.slice(0, commentToUpdateIndex),
+          updatedComment,
+          ...stateToUpdate.comments.slice(commentToUpdateIndex + 1),
+        ];
+    
+        // Update the cloned state with the modified comments array
+        stateToUpdate.comments = updatedComments;
+      } else {
+        console.log(`Current post does not have any replies`);
+    
+        const commentToUpdateIndex = stateToUpdate.comments.findIndex(
+          (comment: Comment) => comment.id === currentPost.id
+        );
+    
+        // Clone the comment and set the replies to a new array with the new comment
+        const updatedComment = {
+          ...stateToUpdate.comments[commentToUpdateIndex],
+          replies: [newComment],
+        };
+    
+        // Clone the comments array and update the comment
+        const updatedComments = [
+          ...stateToUpdate.comments.slice(0, commentToUpdateIndex),
+          updatedComment,
+          ...stateToUpdate.comments.slice(commentToUpdateIndex + 1),
+        ];
+    
+        // Update the cloned state with the modified comments array
+        stateToUpdate.comments = updatedComments;
+      }
+    
+      // Update the cloned state array
+      updatedState[findPostData] = stateToUpdate;
+    
+      // Update the state in an immutable way
+      state.feedback = updatedState;
+      state.changed = true;
     },
+/*  */    
   },
 });
 

@@ -3,6 +3,7 @@ import { Reply } from "../Models/models";
 import Image from "next/image";
 import { RootState } from "@/app/store/store";
 import { uiActions } from "@/app/store/ui-slice";
+import DefaultAvatar from '../../assets/default-avatar.jpeg'
 
 type FeedbackCommentProps = {
   reply: Reply;
@@ -17,7 +18,7 @@ const FeedbackCommentReply = ({ reply }: FeedbackCommentProps) => {
       <div className="flex items-center justify-between pb-4">
         <div className="flex">
           <Image
-            src={reply.user.image || ""}
+            src={reply.user.image || DefaultAvatar}
             alt={reply.user.name || "Photo of the user"}
             width={60}
             height={60}
