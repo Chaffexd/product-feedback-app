@@ -46,7 +46,7 @@ const FeedbackDetailPage = ({ params }: { params: { feedbackId: number }}) => {
 
   return (
     <main className="w-full">
-      <EditModal />
+      <EditModal feedbackId={feedbackId} />
       <FeedbackItemHeader />
       <FeedbackItem 
         feedbackId={feedbackId}

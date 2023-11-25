@@ -29,9 +29,9 @@ export default function Home() {
       console.log("Submission sent");
       // will always send the last (newest) item in the feedback array
       // there must be a better way for this
-      dispatch(
-        sendNewFeedback(feedback.feedback[feedback.feedback.length - 1])
-      );
+      // dispatch(
+      //  sendNewFeedback(feedback.feedback[feedback.feedback.length - 1])
+      // );
     }
   }, [feedback, dispatch, isInitialPageLoad]);
 

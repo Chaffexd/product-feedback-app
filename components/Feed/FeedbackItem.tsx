@@ -21,14 +21,17 @@ const FeedbackItem = ({ feedbackId }: FeedbackItem) => {
   const singleFeedbackItem = feedbackData.feedback.filter(
     (item) => item.id === Number(feedbackId)
   );
+  console.log(singleFeedbackItem)
 
   useEffect(() => {
     if (isInitialPageLoad || feedbackData.changed) {
+      console.log(feedbackData.changed)
+      console.log("DOES THIS TRIGGER?")
       dispatch(fetchFeedbackData());
       dispatch(uiActions.initialPageLoad(false));
       return;
     }
-  }, [dispatch, isInitialPageLoad, feedbackData]);
+  }, [dispatch, isInitialPageLoad, feedbackData.changed]);
 
   return (
     <>

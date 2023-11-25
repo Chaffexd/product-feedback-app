@@ -3,12 +3,42 @@ import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { RootState } from "@/app/store/store";
 import { uiActions } from "@/app/store/ui-slice";
 import { createPortal } from "react-dom";
+import { useRef } from "react";
+import { feedbackActions } from "@/app/store/feedback-slice";
+import { fetchFeedbackData } from "@/app/store/feedback-action";
 
-const EditModal = () => {
+type EditModalProps = {
+  feedbackId: number;
+};
+
+const EditModal = ({ feedbackId }: EditModalProps) => {
+  const dispatch = useAppDispatch();
   const isModalVisible = useAppSelector(
     (state: RootState) => state.ui.addFeedbackIsVisible
   );
-  const dispatch = useAppDispatch();
+  const allPosts = useAppSelector((state) => state.feedback.feedback);
+  // - 1 because of difference in index in DB and store
+  const currentPostDetail = allPosts[feedbackId - 1];
+
+  const { title, category, status } = currentPostDetail;
+
+  const titleRef = useRef<HTMLInputElement>(null);
+  const categoryRef = useRef<HTMLSelectElement>(null);
+  const statusRef = useRef<HTMLSelectElement>(null);
+
+  const handleSavedChanges = () => {
+    const updatedPost = {
+      currentPostDetail: currentPostDetail,
+      title: titleRef.current?.value,
+      category: categoryRef.current?.value,
+      status: statusRef.current?.value,
+    };
+    // give the new data to redux
+    dispatch(feedbackActions.updatePost(updatedPost));
+    dispatch(fetchFeedbackData())
+    dispatch(uiActions.toggle());
+  };
+
   return (
     isModalVisible &&
     createPortal(
@@ -18,10 +48,10 @@ const EditModal = () => {
           onClick={() => dispatch(uiActions.toggle())}
         ></div>
         <div className="fixed z-20 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-5/6 w-7/12">
-          <div className="bg-white rounded-lg px-12 pt-12 pb-4 h-full">
-            <form>
+          <div className="bg-white rounded-lg px-12 pt-12 pb-4 h-full overflow-scroll">
+            <form name="edit-form">
               <h1 className="text-4xl mb-4 text-darker-navy">
-                Editing 'insert title here'
+                Editing '{title}'
               </h1>
               <div className="flex flex-col w-full">
                 <p className="font-bold text-slate mb-2">Feedback Title</p>
@@ -33,20 +63,22 @@ const EditModal = () => {
                   id="title"
                   className="p-4 bg-off-white rounded-lg mb-4"
                   required
-                  defaultValue={"Insert the value of the current post"}
+                  defaultValue={title}
+                  ref={titleRef}
                 />
               </div>
               <div className="flex flex-col">
                 <p className="font-bold text-slate mb-2">Category</p>
-                <label htmlFor="options" className="mb-4">
+                <label htmlFor="category" className="mb-4">
                   Choose a category for your feedback
                 </label>
                 <select
-                  name="options"
-                  id="options"
+                  name="category"
+                  id="category"
                   className="p-4 bg-off-white rounded-lg mb-4"
                   required
-                  defaultValue={"INSERT CORRECT VALUE"}
+                  defaultValue={category}
+                  ref={categoryRef}
                 >
                   <option value="feature">Feature</option>
                   <option value="enhancement">Enhancement</option>
@@ -56,29 +88,40 @@ const EditModal = () => {
               </div>
               <div className="flex flex-col">
                 <p className="font-bold text-slate mb-2">Update Status</p>
-                <label htmlFor="detail" className="mb-2">
+                <label htmlFor="progress" className="mb-2">
                   Change feature state
                 </label>
                 <select
-                  name="options"
-                  id="options"
+                  name="progress"
+                  id="progress"
                   className="p-4 bg-off-white rounded-lg mb-4"
                   required
-                  defaultValue={"INSERT CORRECT VALUE"}
+                  defaultValue={status}
+                  ref={statusRef}
                 >
-                  <option value="planned">Suggestion</option>
-                  <option value="feature">Planned</option>
-                  <option value="enhancement">In-Progress</option>
-                  <option value="ui">Live</option>
+                  <option value="suggestion">Suggestion</option>
+                  <option value="planned">Planned</option>
+                  <option value="in-progress">In-Progress</option>
+                  <option value="live">Live</option>
                 </select>
               </div>
-              <div className="flex justify-between gap-4 mt-2">
-                <button className="bg-red-500 text-white py-2 px-4 rounded-lg">Delete</button>
+              <div className="flex justify-between gap-4 mt-4">
+                <button className="bg-red-500 text-white py-2 px-4 rounded-lg">
+                  Delete
+                </button>
                 <div>
-                  <button className="bg-darker-navy text-white py-2 px-4 rounded-lg">
+                  <button
+                    className="bg-darker-navy text-white py-3 px-4 rounded-lg"
+                    onClick={() => dispatch(uiActions.toggle())}
+                  >
                     Cancel
                   </button>
-                  <button className="bg-purple text-white py-2 px-4 rounded-lg ml-2">
+                  <button
+                    className="bg-purple text-white py-3 px-4 rounded-lg ml-2"
+                    onClick={handleSavedChanges}
+                    role="button"
+                    type="button"
+                  >
                     Save Changes
                   </button>
                 </div>

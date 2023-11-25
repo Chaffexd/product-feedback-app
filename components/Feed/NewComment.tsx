@@ -1,8 +1,7 @@
 "use client";
-import { fetchFeedbackData } from "@/app/store/feedback-action";
 import { feedbackActions } from "@/app/store/feedback-slice";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 type FeedbackItem = {
   feedbackId: number;
@@ -11,7 +10,6 @@ type FeedbackItem = {
 const NewComment = ({ feedbackId }: FeedbackItem) => {
   const newCommentRef = useRef<HTMLTextAreaElement>(null);
   const [charCount, setCharCount] = useState<number>(255);
-  const [stateChanged, setStateChanged] = useState<boolean>(false)
   const feedbackData = useAppSelector((state) => state.feedback);
 
   const dispatch = useAppDispatch();
@@ -59,7 +57,6 @@ const NewComment = ({ feedbackId }: FeedbackItem) => {
             };
             dispatch(feedbackActions.addNewComment(newUserComment));
             newCommentRef.current!.value = "";
-            setStateChanged(true)
           }}
         >
           Post Comment

@@ -1,6 +1,6 @@
 import { Comment, Feedback } from "@/components/Models/models";
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import { addNewCommentToDatabase, updateCommentInDatabase } from "./feedback-action";
+import { addNewCommentToDatabase, updateCommentInDatabase, updatePostData } from "./feedback-action";
 
 type FeedbackState = {
   feedback: Feedback[];
@@ -121,8 +121,27 @@ const feedbackSlice = createSlice({
       
       addNewCommentToDatabase(postIdToUpdate, newPostComments);
       state.changed = true;
-      
     },
+    updatePost (state, action) {
+      const { currentPostDetail } = action.payload;
+      const { category, title, status } = action.payload;
+
+      console.log("CURRENT POST DETAILS =======", currentPostDetail)
+      const updatedPostDetails = {
+        ...currentPostDetail,
+        title,
+        category,
+        status
+      };
+
+      console.log("THIS IS THE UPDATED PIECE OF DATA", updatedPostDetails)
+      updatePostData(currentPostDetail.id - 1, updatedPostDetails);
+      
+      return {
+        ...state,
+        changed: true
+      }
+    }
   },
 });
 

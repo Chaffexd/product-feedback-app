@@ -27,7 +27,9 @@ export const fetchFeedbackData = () => {
     };
 
     try {
+      console.log("DO YOU FETCH NEW FEEDBACK?")
       const allFeedback = await fetchFeedback();
+      console.log(allFeedback)
       // I need to format the data once it comes back from FB as FB adds its own key
       const formattedFeedback = Object.keys(allFeedback).map((key) => ({
         id: key,
@@ -41,6 +43,7 @@ export const fetchFeedbackData = () => {
       );
     } catch (error) {
       // deal with error
+      console.error(error)
     } finally {
       dispatch(uiActions.stopLoading());
     }
@@ -98,41 +101,72 @@ export const sendNewFeedback = (feedback: Feedback) => {
   };
 };
 
-export const updateCommentInDatabase = async (postId: number, updatedComments: Comment[]) => {
+export const updateCommentInDatabase = async (
+  postId: number,
+  updatedComments: Comment[]
+) => {
   try {
     const response = await fetch(
       `https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests/${postId}.json`,
       {
-        method: 'PATCH', 
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ comments: updatedComments }),
       }
     );
 
     if (!response.ok) {
-      throw new Error('Failed to update database');
+      throw new Error("Failed to update database");
     }
   } catch (error) {
-    console.error('Error updating database:', error);
+    console.error("Error updating database:", error);
     throw error;
   }
 };
 
-export const addNewCommentToDatabase = async (postId: number, newPostComments: any ) => {
-  
+export const addNewCommentToDatabase = async (
+  postId: number,
+  newPostComments: any
+) => {
   try {
-    const response = await fetch(`https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests/${postId}.json`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json', },
-      body: JSON.stringify(newPostComments)
-    })
+    const response = await fetch(
+      `https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests/${postId}.json`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newPostComments),
+      }
+    );
 
     if (!response.ok) {
-      throw new Error("Failed to update the comments")
+      throw new Error("Failed to update the comments");
     }
   } catch (error) {
-    console.error("Error updating comments", error)
+    console.error("Error updating comments", error);
+  }
+};
+
+export const updatePostData = async (
+  postId: number,
+  updatedPostDetails: any
+) => {
+  try {
+    const response = await fetch(
+      `https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests/${postId}.json`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedPostDetails),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to update the comments");
+    }
+
+  } catch (error) {
+    console.error("Error updating comments", error);
   }
 };
