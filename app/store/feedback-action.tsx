@@ -119,3 +119,20 @@ export const updateCommentInDatabase = async (postId: number, updatedComments: C
     throw error;
   }
 };
+
+export const addNewCommentToDatabase = async (postId: number, newCommentToAdd: any ) => {
+  
+  try {
+    const response = await fetch(`https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests/${postId}.json`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', },
+      body: JSON.stringify(newCommentToAdd)
+    })
+
+    if (!response.ok) {
+      throw new Error("Failed to update the comments")
+    }
+  } catch (error) {
+    console.error("Error updating comments", error)
+  }
+};

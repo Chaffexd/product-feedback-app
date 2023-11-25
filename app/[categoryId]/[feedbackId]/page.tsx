@@ -1,6 +1,9 @@
+
+import { useAppSelector } from "@/app/store/hooks";
 import FeedbackItem from "@/components/Feed/FeedbackItem";
 import FeedbackItemHeader from "@/components/Feed/FeedbackItemHeader";
 import NewComment from "@/components/Feed/NewComment";
+import { useEffect } from "react";
 
 export async function generateStaticParams() {
   const response = await fetch(
@@ -48,7 +51,7 @@ const FeedbackDetailPage = ({ params }: { params: { feedbackId: number }}) => {
       <FeedbackItem 
         feedbackId={feedbackId}
       />
-      <NewComment />
+      <NewComment feedbackId={feedbackId} />
     </main>
   );
 };

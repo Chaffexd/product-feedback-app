@@ -6,6 +6,7 @@ import { RootState } from "@/app/store/store";
 import { uiActions } from "@/app/store/ui-slice";
 import { feedbackActions } from "@/app/store/feedback-slice";
 import { useRef } from "react";
+import DefaultAvatar from '../../assets/default-avatar.jpeg'
 
 type CommentsProps = {
   comments: Feedback[];
@@ -21,6 +22,7 @@ const FeedbackItemComments = ({ comments }: CommentsProps) => {
   const isReplying = useAppSelector(
     (state: RootState) => state.ui.replyingUsername
   );
+  console.log(comments)
 
   return (
     <section className="bg-white w-full rounded-lg shadow-md p-8 mb-12">
@@ -36,7 +38,7 @@ const FeedbackItemComments = ({ comments }: CommentsProps) => {
         >
           <div className="w-full pt-6 flex pb-4">
             <Image
-              src={eachComment.user.image || ""}
+              src={eachComment.user.image || DefaultAvatar}
               alt={eachComment.user.name || "Photo of the user"}
               width={60}
               height={60}

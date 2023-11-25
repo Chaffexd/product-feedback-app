@@ -14,7 +14,6 @@ type FeedbackItem = {
 const FeedbackItem = ({ feedbackId }: FeedbackItem) => {
   const dispatch = useAppDispatch();
   const feedbackData = useAppSelector((state) => state.feedback);
-  console.log(feedbackData.feedback)
   const isInitialPageLoad = useAppSelector(
     (state) => state.ui.isInitialPageLoad
   );
