@@ -1,7 +1,8 @@
 "use client";
+import { fetchFeedbackData } from "@/app/store/feedback-action";
 import { feedbackActions } from "@/app/store/feedback-slice";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type FeedbackItem = {
   feedbackId: number;
@@ -10,16 +11,15 @@ type FeedbackItem = {
 const NewComment = ({ feedbackId }: FeedbackItem) => {
   const newCommentRef = useRef<HTMLTextAreaElement>(null);
   const [charCount, setCharCount] = useState<number>(255);
+  const [stateChanged, setStateChanged] = useState<boolean>(false)
   const feedbackData = useAppSelector((state) => state.feedback);
 
-  console.log("CURRENTSTATE", feedbackData.feedback);
   const dispatch = useAppDispatch();
 
   // use feedbackId to find which post we are on to add the new comment
   const postToAddComment = feedbackData.feedback.filter(
     (item) => item.id === Number(feedbackId)
   );
-  console.log("THIS POST =======", postToAddComment);
 
   const handleInputChange = () => {
     const textInput = newCommentRef.current!.value;
@@ -44,7 +44,6 @@ const NewComment = ({ feedbackId }: FeedbackItem) => {
           type="button"
           onClick={() => {
             const newUserComment = {
-              currentState: feedbackData.feedback,
               currentPost: postToAddComment,
               newComment: {
                 content: newCommentRef.current?.value,
@@ -60,6 +59,7 @@ const NewComment = ({ feedbackId }: FeedbackItem) => {
             };
             dispatch(feedbackActions.addNewComment(newUserComment));
             newCommentRef.current!.value = "";
+            setStateChanged(true)
           }}
         >
           Post Comment

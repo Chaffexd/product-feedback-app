@@ -23,7 +23,7 @@ const FeedbackItem = ({ feedbackId }: FeedbackItem) => {
   );
 
   useEffect(() => {
-    if (isInitialPageLoad) {
+    if (isInitialPageLoad || feedbackData.changed) {
       dispatch(fetchFeedbackData());
       dispatch(uiActions.initialPageLoad(false));
       return;

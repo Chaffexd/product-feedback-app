@@ -120,13 +120,13 @@ export const updateCommentInDatabase = async (postId: number, updatedComments: C
   }
 };
 
-export const addNewCommentToDatabase = async (postId: number, newCommentToAdd: any ) => {
+export const addNewCommentToDatabase = async (postId: number, newPostComments: any ) => {
   
   try {
     const response = await fetch(`https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests/${postId}.json`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', },
-      body: JSON.stringify(newCommentToAdd)
+      body: JSON.stringify(newPostComments)
     })
 
     if (!response.ok) {

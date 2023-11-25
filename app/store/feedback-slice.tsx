@@ -91,7 +91,6 @@ const feedbackSlice = createSlice({
       // Update the cloned state array
       updatedState[findPostData] = stateToUpdate;
 
-      console.log("UPDATED STATE=====", updatedState);
       // Update the state in an immutable way LOCALLY
       state.feedback = updatedState;
       state.changed = true;
@@ -103,35 +102,26 @@ const feedbackSlice = createSlice({
       );
     },
     addNewComment(state, action) {
-      const { newComment, currentPost, currentState } = action.payload;
-
-      console.log("THIS IS THE POST ID TO UPDATE", currentPost[0].id)
+      const { newComment, currentPost } = action.payload;
       // we -1 because the index in the firebase is different to what is local
       const postIdToUpdate = currentPost[0].id - 1;
-      // gets the length of the comments array and adds 1 to keep IDs from overlapping
-      // and to keep the array indexed nicely
+      // if there are no comments, one will be created
       const currentComments = currentPost[0].comments || [];
       // const currentCommentLength = currentPost.length;
-      // console.log(currentComments)
-      const updatedComments = {
-        comments: [ newComment ]
+
+      const newPostComments = {
+        ...currentPost[0],
+        comments: [...currentComments, newComment]
       };
-      console.log("THIS IS THE NEW POST WITH NEW COMMENTS===", updatedComments);
 
-      // take the current state
-      // clone it
-      // find the comment in the current state
-      // replace it
-      // dispatch it to redux store
-      // trigger redux store update
-     
-
-      /* updateThisState[postIdToUpdate] = stateToUpdate;
-      state.feedback = updateThisState
-      state.changed = true; */
+      // copy the existing post
+      // add the new comment, to existing comments
+      // or recreate the comments key array 
+      // and join all comments together
       
-      addNewCommentToDatabase(postIdToUpdate, updatedComments);
+      addNewCommentToDatabase(postIdToUpdate, newPostComments);
       state.changed = true;
+      
     },
   },
 });

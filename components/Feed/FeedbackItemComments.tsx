@@ -22,7 +22,6 @@ const FeedbackItemComments = ({ comments }: CommentsProps) => {
   const isReplying = useAppSelector(
     (state: RootState) => state.ui.replyingUsername
   );
-  console.log(comments)
 
   return (
     <section className="bg-white w-full rounded-lg shadow-md p-8 mb-12">
