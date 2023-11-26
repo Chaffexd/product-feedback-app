@@ -110,7 +110,8 @@ const feedbackSlice = createSlice({
     addNewComment(state, action) {
       const { newComment, currentPost } = action.payload;
       // we -1 because the index in the firebase is different to what is local
-      const postIdToUpdate = currentPost[0].id - 1;
+      console.log('CURRENT POST=====', currentPost[0].id);
+      const postIdToUpdate = currentPost[0].id;
       // if there are no comments, one will be created
       const currentComments = currentPost[0].comments || [];
       // const currentCommentLength = currentPost.length;
@@ -119,6 +120,7 @@ const feedbackSlice = createSlice({
         ...currentPost[0],
         comments: [...currentComments, newComment],
       };
+      console.log("POST WITH NEW COMMENT", newPostComments)
 
       // copy the existing post
       // add the new comment, to existing comments

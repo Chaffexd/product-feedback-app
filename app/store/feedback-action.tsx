@@ -137,8 +137,9 @@ export const addNewCommentToDatabase = async (
   newPostComments: any
 ) => {
   try {
+    const { firebaseKey } = await findFeedbackItem(postId);
     const response = await fetch(
-      `https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests/${postId}.json`,
+      `https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests/${firebaseKey}.json`,
       {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
