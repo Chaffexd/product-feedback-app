@@ -32,12 +32,31 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: { feedbackId: number }}) {
     const id = params.feedbackId;
 
-    const feedbackItem = await fetch(`https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests/${id}.json`);
-    const metadata = await feedbackItem.json();
+    const allFeedback = await fetch(`https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests.json`,
+      { next: { revalidate: 0 } } 
+    );
+    const metadata = await allFeedback.json();
+    console.log("META DATA", metadata)
+    // const dataArray = Object.values(metadata) as any[];
+    let foundItem = null;
+    
+    
+    for (const key in metadata) {
+      const currentItem = metadata[key]
+      const currentItemID = Number(currentItem.id);
+      const targetID = Number(id);
+    
+      if (currentItemID === targetID) {
+        foundItem = currentItem;
+        console.log("FIREBASE KEY", key)
+        console.log("FOUND ITEM", foundItem);
+        break;
+      }
+    }
 
     return {
-        title: metadata.title,
-        description: metadata.description
+        title: foundItem.title,
+        description: foundItem.description
     }
 }
 

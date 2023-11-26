@@ -6,8 +6,9 @@ import Notification from "../components/UI/Notification";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { RootState } from "./store/store";
 import { useEffect } from "react";
-import { sendNewFeedback, fetchFeedbackData } from "./store/feedback-action";
+import { fetchFeedbackData } from "./store/feedback-action";
 import { uiActions } from "./store/ui-slice";
+import { feedbackActions } from "./store/feedback-slice";
 
 export default function Home() {
   const dispatch = useAppDispatch();
@@ -27,11 +28,9 @@ export default function Home() {
 
     if (feedback.changed) {
       console.log("Submission sent");
-      // will always send the last (newest) item in the feedback array
-      // there must be a better way for this
-      // dispatch(
-      //  sendNewFeedback(feedback.feedback[feedback.feedback.length - 1])
-      // );
+      console.log("POST DELETED");
+      dispatch(fetchFeedbackData());
+      dispatch(feedbackActions.clearState());
     }
   }, [feedback, dispatch, isInitialPageLoad]);
 

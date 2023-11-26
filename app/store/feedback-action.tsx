@@ -2,6 +2,7 @@ import { Dispatch } from "@reduxjs/toolkit";
 import { uiActions } from "./ui-slice";
 import { feedbackActions } from "./feedback-slice";
 import { Comment } from "@/components/Models/models";
+import { findFeedbackItem } from "./feedback-utils";
 
 type Feedback = {
   title?: string;
@@ -15,7 +16,14 @@ export const fetchFeedbackData = () => {
 
     const fetchFeedback = async () => {
       const response = await fetch(
-        "https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests.json"
+        "https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests.json",
+        {
+          headers: { 
+            "Content-Type": "application/json",
+            "Cache-Control": "no-cache"
+        },
+          
+        }
       );
 
       if (!response.ok) {
@@ -27,9 +35,7 @@ export const fetchFeedbackData = () => {
     };
 
     try {
-      console.log("DO YOU FETCH NEW FEEDBACK?")
       const allFeedback = await fetchFeedback();
-      console.log(allFeedback)
       // I need to format the data once it comes back from FB as FB adds its own key
       const formattedFeedback = Object.keys(allFeedback).map((key) => ({
         id: key,
@@ -43,7 +49,7 @@ export const fetchFeedbackData = () => {
       );
     } catch (error) {
       // deal with error
-      console.error(error)
+      console.error(error);
     } finally {
       dispatch(uiActions.stopLoading());
     }
@@ -152,9 +158,11 @@ export const updatePostData = async (
   postId: number,
   updatedPostDetails: any
 ) => {
+  const { firebaseKey } = await findFeedbackItem(postId);
+  console.log(firebaseKey);
   try {
     const response = await fetch(
-      `https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests/${postId}.json`,
+      `https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests/${firebaseKey}.json`,
       {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -165,8 +173,26 @@ export const updatePostData = async (
     if (!response.ok) {
       throw new Error("Failed to update the comments");
     }
-
   } catch (error) {
     console.error("Error updating comments", error);
+  }
+};
+
+export const deletePostData = async (postId: number) => {
+  const { firebaseKey } = await findFeedbackItem(postId);
+
+  try {
+    const response = await fetch(
+      `https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests/${firebaseKey}.json`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to delete the post");
+    }
+  } catch (error) {
+    console.error("Error deleting post", error);
   }
 };

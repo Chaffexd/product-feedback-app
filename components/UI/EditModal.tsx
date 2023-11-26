@@ -3,24 +3,33 @@ import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { RootState } from "@/app/store/store";
 import { uiActions } from "@/app/store/ui-slice";
 import { createPortal } from "react-dom";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { feedbackActions } from "@/app/store/feedback-slice";
-import { fetchFeedbackData } from "@/app/store/feedback-action";
+import { useRouter } from "next/navigation";
 
 type EditModalProps = {
   feedbackId: number;
 };
 
 const EditModal = ({ feedbackId }: EditModalProps) => {
+  const router = useRouter();
+  const [isDeleting, setIsDeleting] = useState<boolean>(false)
   const dispatch = useAppDispatch();
   const isModalVisible = useAppSelector(
     (state: RootState) => state.ui.addFeedbackIsVisible
   );
   const allPosts = useAppSelector((state) => state.feedback.feedback);
   // - 1 because of difference in index in DB and store
-  const currentPostDetail = allPosts[feedbackId - 1];
 
-  const { title, category, status } = currentPostDetail;
+  // const currentPostDetail = allPosts[feedbackId - 1];
+  // console.log("currentPostDetail=========", currentPostDetail)
+  const currentPostDetail = allPosts.find(
+    (post) => Number(post.id) === Number(feedbackId)
+  );
+  // console.log("currentPostDetail=========", currentPostDetails)
+  // console.log("TITLE", currentPostDetails?.title, 'CATEGORY', currentPostDetails?.category, 'STATUS', currentPostDetails?.status)
+
+  const { title, category, status } = currentPostDetail!;
 
   const titleRef = useRef<HTMLInputElement>(null);
   const categoryRef = useRef<HTMLSelectElement>(null);
@@ -35,7 +44,7 @@ const EditModal = ({ feedbackId }: EditModalProps) => {
     };
     // give the new data to redux
     dispatch(feedbackActions.updatePost(updatedPost));
-    dispatch(fetchFeedbackData())
+
     dispatch(uiActions.toggle());
   };
 
@@ -106,8 +115,22 @@ const EditModal = ({ feedbackId }: EditModalProps) => {
                 </select>
               </div>
               <div className="flex justify-between gap-4 mt-4">
-                <button className="bg-red-500 text-white py-2 px-4 rounded-lg">
-                  Delete
+                <button
+                  className="bg-red-500 text-white py-2 px-4 rounded-lg"
+                  onClick={async () => {
+                    try {
+                      dispatch(feedbackActions.deletePost({ feedbackId }));
+                      setIsDeleting(true);
+                    } catch (error) {
+                      console.error("Error deleting post", error)
+                    } finally {
+                      console.log("Deleted!")
+                      dispatch(uiActions.toggle());
+                      router.push("/");
+                    }
+                  }}
+                >
+                  {isDeleting ? 'Deleting...' : 'Delete'}
                 </button>
                 <div>
                   <button

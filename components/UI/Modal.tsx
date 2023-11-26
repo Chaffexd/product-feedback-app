@@ -1,16 +1,18 @@
 import { RootState } from "@/app/store/store";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { useAppDispatch } from "@/app/store/hooks";
 import { uiActions } from "@/app/store/ui-slice";
 import { createPortal } from "react-dom";
 import { useRef, useState } from "react";
 import { feedbackActions } from "@/app/store/feedback-slice";
+import { sendNewFeedback } from "@/app/store/feedback-action";
 
 const generateRandomID = () => {
   return Math.floor(Math.random() * Date.now());
 }
 
 const Modal = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const titleRef = useRef<HTMLInputElement>(null);
   const categoryRef = useRef<HTMLSelectElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
@@ -43,9 +45,11 @@ const Modal = () => {
         setErrorMessage("Please fill in the required fields.");
         return;
     }
+    
 
     // update redux state
     dispatch(feedbackActions.setFeedbackData(submissionData));
+    dispatch(sendNewFeedback(submissionData))
 
     // once submitted, clear the form and close the window
     toggleFeedbackHandler();

@@ -1,6 +1,12 @@
 import { Comment, Feedback } from "@/components/Models/models";
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import { addNewCommentToDatabase, updateCommentInDatabase, updatePostData } from "./feedback-action";
+import {
+  addNewCommentToDatabase,
+  deletePostData,
+  sendNewFeedback,
+  updateCommentInDatabase,
+  updatePostData,
+} from "./feedback-action";
 
 type FeedbackState = {
   feedback: Feedback[];
@@ -111,37 +117,56 @@ const feedbackSlice = createSlice({
 
       const newPostComments = {
         ...currentPost[0],
-        comments: [...currentComments, newComment]
+        comments: [...currentComments, newComment],
       };
 
       // copy the existing post
       // add the new comment, to existing comments
-      // or recreate the comments key array 
+      // or recreate the comments key array
       // and join all comments together
-      
+
       addNewCommentToDatabase(postIdToUpdate, newPostComments);
       state.changed = true;
     },
-    updatePost (state, action) {
+    updatePost(state, action) {
       const { currentPostDetail } = action.payload;
       const { category, title, status } = action.payload;
 
-      console.log("CURRENT POST DETAILS =======", currentPostDetail)
+      console.log("CURRENT POST DETAILS =======", currentPostDetail);
       const updatedPostDetails = {
         ...currentPostDetail,
         title,
         category,
-        status
+        status,
       };
 
-      console.log("THIS IS THE UPDATED PIECE OF DATA", updatedPostDetails)
-      updatePostData(currentPostDetail.id - 1, updatedPostDetails);
-      
+      console.log("THIS IS THE UPDATED PIECE OF DATA", updatedPostDetails);
+      const updatedFeedback = state.feedback.map((post) =>
+        post.id === updatedPostDetails.id ? updatedPostDetails : post
+      );
+      updatePostData(currentPostDetail.id, updatedPostDetails);
+
       return {
         ...state,
-        changed: true
-      }
-    }
+        feedback: updatedFeedback,
+        changed: true,
+      };
+    },
+    deletePost(state, action) {
+      const { feedbackId } = action.payload;
+      console.log("FEEDBACK ID", feedbackId);
+
+      const updatedFeedback = state.feedback.filter(
+        (post) => post.id !== feedbackId
+      );
+
+      deletePostData(feedbackId);
+      state.feedback = updatedFeedback;
+      state.changed = true;
+    },
+    clearState(state) {
+      state.changed = false;
+    },
   },
 });
 

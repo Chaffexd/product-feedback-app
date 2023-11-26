@@ -18,10 +18,11 @@ const FeedbackItem = ({ feedbackId }: FeedbackItem) => {
     (state) => state.ui.isInitialPageLoad
   );
 
+
   const singleFeedbackItem = feedbackData.feedback.filter(
     (item) => item.id === Number(feedbackId)
   );
-  console.log(singleFeedbackItem)
+
 
   useEffect(() => {
     if (isInitialPageLoad || feedbackData.changed) {
