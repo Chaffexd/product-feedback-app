@@ -5,8 +5,9 @@ import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { RootState } from "@/app/store/store";
 import { uiActions } from "@/app/store/ui-slice";
 import { feedbackActions } from "@/app/store/feedback-slice";
-import { useRef } from "react";
-import DefaultAvatar from '../../assets/default-avatar.jpeg'
+import { useEffect, useRef } from "react";
+import DefaultAvatar from "../../assets/default-avatar.jpeg";
+import { fetchFeedbackData } from "@/app/store/feedback-action";
 
 type CommentsProps = {
   comments: Feedback[];
@@ -14,6 +15,7 @@ type CommentsProps = {
 
 const FeedbackItemComments = ({ comments }: CommentsProps) => {
   const currentState = useAppSelector((state) => state.feedback.feedback);
+  const changed = useAppSelector((state: RootState) => state.feedback.changed);
   const dispatch = useAppDispatch();
   const newCommentRef = useRef<HTMLTextAreaElement>(null);
 
@@ -22,6 +24,13 @@ const FeedbackItemComments = ({ comments }: CommentsProps) => {
   const isReplying = useAppSelector(
     (state: RootState) => state.ui.replyingUsername
   );
+
+  useEffect(() => {
+    if (changed) {
+      dispatch(fetchFeedbackData());
+      console.log("STATE CHANGED FOR COMMENTS");
+    }
+  }, [changed]);
 
   return (
     <section className="bg-white w-full rounded-lg shadow-md p-8 mb-12">
@@ -104,7 +113,7 @@ const FeedbackItemComments = ({ comments }: CommentsProps) => {
                   };
 
                   dispatch(feedbackActions.updateComment(userComment));
-                  dispatch(uiActions.isReplying(null))
+                  dispatch(uiActions.isReplying(null));
                   newCommentRef.current!.value = "";
                 }}
               >
