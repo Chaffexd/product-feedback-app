@@ -30,12 +30,7 @@ const FeedbackCommentReply = ({ reply }: FeedbackCommentProps) => {
           </div>
         </div>
         <div>
-          <button
-            className="font-bold text-navy"
-            onClick={() => dispatch(uiActions.isReplying(reply.user.username))}
-          >
-            Reply
-          </button>
+          
         </div>
       </div>
       <p className="text-slate">{reply.content}</p>

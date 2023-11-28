@@ -128,9 +128,10 @@ const FeedbackItemComments = ({ comments }: CommentsProps) => {
               </button>
             </div>
           )}
-          {eachComment.replies?.map((reply) => (
+          {/* REMOVING THIS FUNCTIONALITY FOR NOW */}
+          {/* {eachComment.replies?.map((reply) => (
             <FeedbackCommentReply key={reply.user.name} reply={reply} />
-          ))}
+          ))} */}
         </article>
       ))}
     </section>

@@ -8,6 +8,7 @@ import { RootState } from "./store/store";
 import { useEffect } from "react";
 import { fetchFeedbackData } from "./store/feedback-action";
 import { uiActions } from "./store/ui-slice";
+import { useSession } from "next-auth/react";
 
 export default function Home() {
   const dispatch = useAppDispatch();
@@ -17,7 +18,7 @@ export default function Home() {
     (state: RootState) => state.ui.notification
   );
   console.log(feedback.feedback);
-
+  
   useEffect(() => {
     if (isInitialPageLoad) {
       dispatch(fetchFeedbackData());
@@ -25,6 +26,9 @@ export default function Home() {
       return;
     }
   }, [feedback, dispatch, isInitialPageLoad]);
+
+  const { data: session, status } = useSession();
+  console.log("STATUS LOG IN", session, status)
 
   return (
     <>

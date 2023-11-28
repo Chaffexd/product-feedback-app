@@ -5,12 +5,17 @@ import { useState } from "react";
 import { uiActions } from "@/app/store/ui-slice";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { filterActions } from "@/app/store/filter-slice";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const SuggestionHeader = () => {
   const [dropdown, setDropdown] = useState<boolean>(false);
   const selectedFilter = useAppSelector((state) => state.filter.selectedFilter);
-  const feedback = useAppSelector((state) => state.filter.filteredFeedback.length); // length of objects in selected filter
+  const feedback = useAppSelector(
+    (state) => state.filter.filteredFeedback.length
+  ); // length of objects in selected filter
   const dispatch = useAppDispatch();
+  const router = useRouter()
 
   const toggleFeedbackHandler = () => {
     dispatch(uiActions.toggle());
@@ -25,6 +30,8 @@ const SuggestionHeader = () => {
     setDropdown(false); // Close the dropdown when an item is clicked
   };
 
+  const { data: session, status } = useSession();
+  console.log("STATUS LOG IN", session, status);
 
   return (
     <form className="w-full bg-darker-navy h-20 rounded-lg flex justify-between items-center text-white px-4 mb-4">
@@ -32,7 +39,9 @@ const SuggestionHeader = () => {
         <i className="mr-4">
           <IconSuggestion />
         </i>
-        <h1 className="font-bold mr-4">{feedback} {feedback === 1 ? 'Suggestion' : 'Suggestions'}</h1>
+        <h1 className="font-bold mr-4">
+          {feedback} {feedback === 1 ? "Suggestion" : "Suggestions"}
+        </h1>
         <div className="flex">
           <p className="mr-4">Sort by: </p>
           <button
@@ -76,13 +85,20 @@ const SuggestionHeader = () => {
           )}
         </div>
       </div>
-      <button
-        type="button"
-        className="bg-purple rounded-lg h-12 w-40 hover:"
-        onClick={toggleFeedbackHandler}
-      >
-        + Add Feedback
-      </button>
+      {status === "authenticated" ? (
+        <div>
+          <button onClick={() => router.push('/api/auth/signout')} className="bg-purple rounded-lg h-12 w-24 mr-4">Sign Out</button>
+          <button
+            type="button"
+            className="bg-purple rounded-lg h-12 w-40 hover:"
+            onClick={toggleFeedbackHandler}
+          >
+            + Add Feedback
+          </button>
+        </div>
+      ) : status === "loading" || status === "unauthenticated" ? (
+        <button className="bg-purple rounded-lg h-12 w-40" onClick={() => signIn()}>Sign In</button>
+      ) : null}
     </form>
   );
 };
