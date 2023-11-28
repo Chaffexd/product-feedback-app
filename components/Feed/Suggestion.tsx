@@ -4,7 +4,7 @@ import Comments from "@/assets/shared/Comments";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { Feedback } from "../Models/models";
 import { filterActions } from "@/app/store/filter-slice";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import NoData from "../UI/NoData";
 import Loading from "../UI/Loading";
 
@@ -17,39 +17,43 @@ const Suggestion = () => {
   );
   const isLoading = useAppSelector((state) => state.ui.isLoading);
 
-  let sortedData = [...allFeedback];
+  const sortedData = useMemo(() => {
+    let sortedData = [...allFeedback];
 
-  switch (selectedFilter) {
-    case "Most Upvotes":
-      // sort data by most upvotes
-      sortedData.sort((a, b) => b.upvotes - a.upvotes);
-      break;
-    case "Least Upvotes":
-      // sort by least upvotes
-      sortedData.sort((a, b) => a.upvotes - b.upvotes);
-      break;
-    case "Most Comments":
-      // sort by most comments
-      sortedData.sort(
-        (a, b) => (b.comments?.length || 0) - (a.comments?.length || 0) // 0 as a fallback, there may be no comments
-      );
-      break;
-    case "Least Comments":
-      // sort by least comments
-      sortedData.sort(
-        (a, b) => (a.comments?.length || 0) - (b.comments?.length || 0) // 0 as a fallback, there may be no comments
-      );
-      break;
-    default:
-      // return most upvotes as default
-      sortedData.sort((a, b) => b.upvotes - a.upvotes);
-  }
+    switch (selectedFilter) {
+      case "Most Upvotes":
+        // sort data by most upvotes
+        sortedData.sort((a, b) => b.upvotes - a.upvotes);
+        break;
+      case "Least Upvotes":
+        // sort by least upvotes
+        sortedData.sort((a, b) => a.upvotes - b.upvotes);
+        break;
+      case "Most Comments":
+        // sort by most comments
+        sortedData.sort(
+          (a, b) => (b.comments?.length || 0) - (a.comments?.length || 0) // 0 as a fallback, there may be no comments
+        );
+        break;
+      case "Least Comments":
+        // sort by least comments
+        sortedData.sort(
+          (a, b) => (a.comments?.length || 0) - (b.comments?.length || 0) // 0 as a fallback, there may be no comments
+        );
+        break;
+      default:
+        // return most upvotes as default
+        sortedData.sort((a, b) => b.upvotes - a.upvotes);
+    }
 
-  if (selectedCategory !== "All") {
-    sortedData = sortedData.filter(
-      (data) => data.category === selectedCategory.toLowerCase()
-    ); //TLC because button has a capital letter
-  }
+    if (selectedCategory !== "All") {
+      sortedData = sortedData.filter(
+        (data) => data.category === selectedCategory.toLowerCase()
+      ); //TLC because button has a capital letter
+    }
+
+    return sortedData;
+  }, [allFeedback, selectedCategory, selectedFilter]);
 
   useEffect(() => {
     dispatch(filterActions.setCategory(selectedCategory));
@@ -88,7 +92,11 @@ const Suggestion = () => {
                 <i>
                   <Comments />
                 </i>
-                <p className="pl-2">{feedback.comments?.length === undefined ? 0 : feedback.comments?.length}</p>
+                <p className="pl-2">
+                  {feedback.comments?.length === undefined
+                    ? 0
+                    : feedback.comments?.length}
+                </p>
               </div>
             </article>
           </Link>
