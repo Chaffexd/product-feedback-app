@@ -8,7 +8,6 @@ import { RootState } from "./store/store";
 import { useEffect } from "react";
 import { fetchFeedbackData } from "./store/feedback-action";
 import { uiActions } from "./store/ui-slice";
-import { feedbackActions } from "./store/feedback-slice";
 
 export default function Home() {
   const dispatch = useAppDispatch();
@@ -24,13 +23,6 @@ export default function Home() {
       dispatch(fetchFeedbackData());
       dispatch(uiActions.initialPageLoad(false));
       return;
-    }
-
-    if (feedback.changed) {
-      console.log("Submission sent");
-      console.log("POST DELETED");
-      dispatch(fetchFeedbackData());
-      dispatch(feedbackActions.clearState());
     }
   }, [feedback, dispatch, isInitialPageLoad]);
 

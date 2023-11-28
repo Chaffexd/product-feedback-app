@@ -15,7 +15,11 @@ type CommentsProps = {
 
 const FeedbackItemComments = ({ comments }: CommentsProps) => {
   const currentState = useAppSelector((state) => state.feedback.feedback);
-  const changed = useAppSelector((state: RootState) => state.feedback.changed);
+  const feedbackData = useAppSelector((state) => state.feedback);
+  const isInitialPageLoad = useAppSelector(
+    (state) => state.ui.isInitialPageLoad
+  );
+  console.log("IN THIS THE INITIAL PAGE LOAD", isInitialPageLoad)
   const dispatch = useAppDispatch();
   const newCommentRef = useRef<HTMLTextAreaElement>(null);
 
@@ -26,11 +30,14 @@ const FeedbackItemComments = ({ comments }: CommentsProps) => {
   );
 
   useEffect(() => {
-    if (changed) {
-      dispatch(fetchFeedbackData());
-      console.log("STATE CHANGED FOR COMMENTS");
+    if (isInitialPageLoad || feedbackData.changed) {
+      console.log(feedbackData.changed);
+      console.log("DOES THIS TRIGGER?");
+      // dispatch(fetchFeedbackData());
+      dispatch(uiActions.initialPageLoad(false));
+      return;
     }
-  }, [changed]);
+  }, [dispatch, isInitialPageLoad, feedbackData.changed]);
 
   return (
     <section className="bg-white w-full rounded-lg shadow-md p-8 mb-12">

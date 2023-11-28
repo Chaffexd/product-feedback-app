@@ -6,6 +6,7 @@ import { createPortal } from "react-dom";
 import { useRef, useState } from "react";
 import { feedbackActions } from "@/app/store/feedback-slice";
 import { useRouter } from "next/navigation";
+import { Feedback } from "../Models/models";
 
 type EditModalProps = {
   feedbackId: number;
@@ -13,12 +14,13 @@ type EditModalProps = {
 
 const EditModal = ({ feedbackId }: EditModalProps) => {
   const router = useRouter();
-  const [isDeleting, setIsDeleting] = useState<boolean>(false)
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const isModalVisible = useAppSelector(
     (state: RootState) => state.ui.addFeedbackIsVisible
   );
   const allPosts = useAppSelector((state) => state.feedback.feedback);
+
   // - 1 because of difference in index in DB and store
 
   // const currentPostDetail = allPosts[feedbackId - 1];
@@ -29,7 +31,7 @@ const EditModal = ({ feedbackId }: EditModalProps) => {
   // console.log("currentPostDetail=========", currentPostDetails)
   // console.log("TITLE", currentPostDetails?.title, 'CATEGORY', currentPostDetails?.category, 'STATUS', currentPostDetails?.status)
 
-  const { title, category, status } = currentPostDetail!;
+  const { title, category, status } = currentPostDetail || {} as Feedback;
 
   const titleRef = useRef<HTMLInputElement>(null);
   const categoryRef = useRef<HTMLSelectElement>(null);
@@ -117,20 +119,22 @@ const EditModal = ({ feedbackId }: EditModalProps) => {
               <div className="flex justify-between gap-4 mt-4">
                 <button
                   className="bg-red-500 text-white py-2 px-4 rounded-lg"
-                  onClick={async () => {
+                  onClick={() => {
                     try {
-                      dispatch(feedbackActions.deletePost({ feedbackId }));
+                      router.push("/");
+                      dispatch(
+                        feedbackActions.deletePost({ feedbackId, allPosts })
+                      );
                       setIsDeleting(true);
                     } catch (error) {
-                      console.error("Error deleting post", error)
+                      console.error("Error deleting post", error);
                     } finally {
-                      console.log("Deleted!")
+                      console.log("Deleted!");
                       dispatch(uiActions.toggle());
-                      router.push("/");
                     }
                   }}
                 >
-                  {isDeleting ? 'Deleting...' : 'Delete'}
+                  {isDeleting ? "Deleting..." : "Delete"}
                 </button>
                 <div>
                   <button

@@ -19,6 +19,27 @@ const initialState: FeedbackState = {
   changed: false,
 };
 
+export const addNewCommentAsync = createAsyncThunk(
+  "feedback/addNewComment",
+  async ({
+    newComment,
+    currentPost,
+  }: {
+    newComment: Comment;
+    currentPost: Feedback;
+  }) => {
+    const postIdToUpdate = currentPost.id;
+    const currentComments = currentPost.comments || [];
+    const updatedComments = [...currentComments, newComment];
+    const newPostComments = {
+      ...currentPost,
+      comments: updatedComments,
+    };
+    await addNewCommentToDatabase(postIdToUpdate, newPostComments);
+    return newPostComments;
+  }
+);
+
 const feedbackSlice = createSlice({
   name: "feedback",
   initialState,
@@ -108,27 +129,35 @@ const feedbackSlice = createSlice({
       );
     },
     addNewComment(state, action) {
-      const { newComment, currentPost } = action.payload;
+      const { newComment, currentPost, feedbackData } = action.payload;
       // we -1 because the index in the firebase is different to what is local
-      console.log('CURRENT POST=====', currentPost[0].id);
+      console.log("CURRENT POST=====", currentPost[0].id);
       const postIdToUpdate = currentPost[0].id;
       // if there are no comments, one will be created
       const currentComments = currentPost[0].comments || [];
-      // const currentCommentLength = currentPost.length;
-
       const newPostComments = {
         ...currentPost[0],
         comments: [...currentComments, newComment],
       };
-      console.log("POST WITH NEW COMMENT", newPostComments)
+      console.log("POST WITH NEW COMMENT", newPostComments);
+      console.log("CURRENT STATE", feedbackData.feedback);
 
       // copy the existing post
       // add the new comment, to existing comments
       // or recreate the comments key array
       // and join all comments together
+      const updatedFeedback = feedbackData.feedback.map((post: Feedback) =>
+        post.id === postIdToUpdate
+          ? { ...post, comments: [...currentComments, newComment] }
+          : post
+      );
 
       addNewCommentToDatabase(postIdToUpdate, newPostComments);
-      state.changed = true;
+      return {
+        ...state,
+        feedback: updatedFeedback,
+        changed: true
+      }
     },
     updatePost(state, action) {
       const { currentPostDetail } = action.payload;
@@ -155,22 +184,37 @@ const feedbackSlice = createSlice({
       };
     },
     deletePost(state, action) {
-      const { feedbackId } = action.payload;
-      console.log("FEEDBACK ID", feedbackId);
+      const { feedbackId, allPosts } = action.payload;
+      // console.log("FEEDBACK ID", feedbackId);
+      // console.log("ALL POSTS ============ ", allPosts);
 
+      // this removes the current post you are deleting from the state
       const updatedFeedback = state.feedback.filter(
-        (post) => post.id !== feedbackId
+        (post) => Number(post.id) !== Number(feedbackId)
       );
+      console.log("UPDATED FEEDBACK=========", updatedFeedback);
 
       deletePostData(feedbackId);
-      state.feedback = updatedFeedback;
-      state.changed = true;
+
+      const newState = {
+        ...state,
+        feedback: updatedFeedback,
+        changed: true,
+      };
+      console.log("NEW STATE", newState);
+      return newState;
     },
     clearState(state) {
       state.changed = false;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(addNewCommentAsync.fulfilled, (state, action) => {
+      state.changed = true;
+      state.feedback.push(action.payload);
+    });
+  },
 });
 
-export const feedbackActions = { ...feedbackSlice.actions };
+export const feedbackActions = { ...feedbackSlice.actions, addNewCommentAsync };
 export default feedbackSlice;

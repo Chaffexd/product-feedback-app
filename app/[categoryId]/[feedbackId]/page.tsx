@@ -1,4 +1,3 @@
-
 import FeedbackItem from "@/components/Feed/FeedbackItem";
 import FeedbackItemHeader from "@/components/Feed/FeedbackItemHeader";
 import NewComment from "@/components/Feed/NewComment";
@@ -29,47 +28,53 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({ params }: { params: { feedbackId: number }}) {
-    const id = params.feedbackId;
+export async function generateMetadata({
+  params,
+}: {
+  params: { feedbackId: number };
+}) {
+  const id = params.feedbackId;
 
-    const allFeedback = await fetch(`https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests.json`,
-      { next: { revalidate: 0 } } 
-    );
-    const metadata = await allFeedback.json();
-    console.log("META DATA", metadata)
-    // const dataArray = Object.values(metadata) as any[];
-    let foundItem = null;
-    
-    
-    for (const key in metadata) {
-      const currentItem = metadata[key]
-      const currentItemID = Number(currentItem.id);
-      const targetID = Number(id);
-    
-      if (currentItemID === targetID) {
-        foundItem = currentItem;
-        console.log("FIREBASE KEY", key)
-        console.log("FOUND ITEM", foundItem);
-        break;
-      }
-    }
+  const allFeedback = await fetch(
+    `https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests.json`,
+    { next: { revalidate: 0 } }
+  );
+  const metadata = await allFeedback.json();
+  console.log("META DATA", metadata);
+  // const dataArray = Object.values(metadata) as any[];
+  let foundItem = null;
 
-    return {
-        title: foundItem.title,
-        description: foundItem.description
+  for (const key in metadata) {
+    const currentItem = metadata[key];
+    const currentItemID = Number(currentItem.id);
+    const targetID = Number(id);
+
+    if (currentItemID === targetID) {
+      foundItem = currentItem;
+      console.log("FIREBASE KEY", key);
+      console.log("FOUND ITEM", foundItem);
+      break;
     }
+  }
+
+  return {
+    title: foundItem.title,
+    description: foundItem.description,
+  };
 }
 
-const FeedbackDetailPage = ({ params }: { params: { feedbackId: number }}) => {
+const FeedbackDetailPage = async ({
+  params,
+}: {
+  params: { feedbackId: number };
+}) => {
   const feedbackId = params.feedbackId;
 
   return (
     <main className="w-full">
       <EditModal feedbackId={feedbackId} />
       <FeedbackItemHeader />
-      <FeedbackItem 
-        feedbackId={feedbackId}
-      />
+      <FeedbackItem feedbackId={feedbackId} />
       <NewComment feedbackId={feedbackId} />
     </main>
   );

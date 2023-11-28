@@ -20,7 +20,7 @@ export const fetchFeedbackData = () => {
         {
           headers: { 
             "Content-Type": "application/json",
-            "Cache-Control": "no-cache"
+            "Cache-Control": "no-cache",
         },
           
         }

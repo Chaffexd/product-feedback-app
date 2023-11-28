@@ -42,6 +42,7 @@ const NewComment = ({ feedbackId }: FeedbackItem) => {
           type="button"
           onClick={() => {
             const newUserComment = {
+              feedbackData: feedbackData,
               currentPost: postToAddComment,
               newComment: {
                 content: newCommentRef.current?.value,

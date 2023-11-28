@@ -6,6 +6,7 @@ import ArrowUp from "@/assets/shared/ArrowUp";
 import Comments from "@/assets/shared/Comments";
 import React, { useEffect } from "react";
 import FeedbackItemComments from "./FeedbackItemComments";
+import { useRouter } from "next/navigation";
 
 type FeedbackItem = {
   feedbackId: number;
@@ -23,9 +24,8 @@ const FeedbackItem = ({ feedbackId }: FeedbackItem) => {
     (item) => item.id === Number(feedbackId)
   );
 
-
   useEffect(() => {
-    if (isInitialPageLoad || feedbackData.changed) {
+    if (isInitialPageLoad) {
       console.log(feedbackData.changed)
       console.log("DOES THIS TRIGGER?")
       dispatch(fetchFeedbackData());
