@@ -107,7 +107,7 @@ const SuggestionHeader = () => {
       ) : status === "loading" || status === "unauthenticated" ? (
         <button
           className="bg-purple rounded-lg h-12 w-40"
-          onClick={() => signIn()}
+          onClick={() => router.push('/api/auth/signin')}
         >
           Sign In
         </button>
