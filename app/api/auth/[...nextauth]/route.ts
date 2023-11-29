@@ -9,10 +9,10 @@ const authOptions = {
       clientId: process.env.GITHUB_ID ?? "",
       clientSecret: process.env.GITHUB_SECRET ?? "",
     }),
-    /* GoogleProvider({
+    GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? ""
-    }) */
+      clientSecret: process.env.GOOGLE_SECRET ?? ""
+    })
     // ...add more providers here
   ],
 }

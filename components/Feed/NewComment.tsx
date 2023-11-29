@@ -57,7 +57,7 @@ const NewComment = ({ feedbackId }: FeedbackItem) => {
                     user: {
                       image: session.user?.image,
                       name: session.user?.name,
-                      username: session.user?.email,
+                      username: session.user?.name,
                     },
                   },
                 };

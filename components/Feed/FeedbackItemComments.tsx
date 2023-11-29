@@ -116,7 +116,7 @@ const FeedbackItemComments = ({ comments }: CommentsProps) => {
                       user: {
                         image: session?.user?.image,
                         name: session?.user?.name,
-                        username: session?.user?.email,
+                        username: session?.user?.name,
                       },
                     },
                   };

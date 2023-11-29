@@ -8,6 +8,7 @@ const nextConfig = {
           "https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/",
       },
       { protocol: "https", hostname: "avatars.githubusercontent.com" },
+      { protocol: 'https', hostname: 'lh3.googleusercontent.com' }
     ],
   },
 };
