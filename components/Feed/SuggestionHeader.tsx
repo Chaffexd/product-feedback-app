@@ -15,7 +15,7 @@ const SuggestionHeader = () => {
     (state) => state.filter.filteredFeedback.length
   ); // length of objects in selected filter
   const dispatch = useAppDispatch();
-  const router = useRouter()
+  const router = useRouter();
 
   const toggleFeedbackHandler = () => {
     dispatch(uiActions.toggle());
@@ -44,13 +44,16 @@ const SuggestionHeader = () => {
         </h1>
         <div className="flex">
           <p className="mr-4">Sort by: </p>
-          <button
-            type="button"
-            onClick={dropdownHandler}
-            className="flex items-center"
-          >
-            {selectedFilter} <ArrowDown dropdown={dropdown} />
-          </button>
+          <div className="flex items-center">
+            <button
+              type="button"
+              onClick={dropdownHandler}
+              className="flex items-center mr-2"
+            >
+              {selectedFilter}
+            </button>
+            <ArrowDown dropdown={dropdown} />
+          </div>
           {dropdown && (
             <ul className="absolute bg-white shadow-lg text-slate rounded-lg mt-16 w-1/5 cursor-pointer">
               <li
@@ -87,7 +90,12 @@ const SuggestionHeader = () => {
       </div>
       {status === "authenticated" ? (
         <div>
-          <button onClick={() => router.push('/api/auth/signout')} className="bg-purple rounded-lg h-12 w-24 mr-4">Sign Out</button>
+          <button
+            onClick={() => router.push("/api/auth/signout")}
+            className="bg-purple rounded-lg h-12 w-24 mr-4"
+          >
+            Sign Out
+          </button>
           <button
             type="button"
             className="bg-purple rounded-lg h-12 w-40 hover:"
@@ -97,7 +105,12 @@ const SuggestionHeader = () => {
           </button>
         </div>
       ) : status === "loading" || status === "unauthenticated" ? (
-        <button className="bg-purple rounded-lg h-12 w-40" onClick={() => signIn()}>Sign In</button>
+        <button
+          className="bg-purple rounded-lg h-12 w-40"
+          onClick={() => signIn()}
+        >
+          Sign In
+        </button>
       ) : null}
     </form>
   );

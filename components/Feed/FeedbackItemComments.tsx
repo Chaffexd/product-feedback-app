@@ -7,7 +7,7 @@ import { uiActions } from "@/app/store/ui-slice";
 import { feedbackActions } from "@/app/store/feedback-slice";
 import { useEffect, useRef } from "react";
 import DefaultAvatar from "../../assets/default-avatar.jpeg";
-import { fetchFeedbackData } from "@/app/store/feedback-action";
+import { useSession } from "next-auth/react";
 
 type CommentsProps = {
   comments: Feedback[];
@@ -39,6 +39,8 @@ const FeedbackItemComments = ({ comments }: CommentsProps) => {
     }
   }, [dispatch, isInitialPageLoad, feedbackData.changed]);
 
+  const { data: session, status } = useSession();
+
   return (
     <section className="bg-white w-full rounded-lg shadow-md p-8 mb-12">
       <h1 className="font-bold text-darker-navy text-lg">
@@ -66,14 +68,14 @@ const FeedbackItemComments = ({ comments }: CommentsProps) => {
                 </h2>
                 <h3 className="text-slate">@{eachComment.user.username}</h3>
               </div>
-              <button
+              {status === 'authenticated' && <button
                 className="font-bold text-navy"
                 onClick={() => {
                   dispatch(uiActions.isReplying(eachComment.user.username));
                 }}
               >
                 Reply
-              </button>
+              </button>}
             </div>
           </div>
           <div
@@ -112,9 +114,9 @@ const FeedbackItemComments = ({ comments }: CommentsProps) => {
                       replyingTo: eachComment.user.username,
                       // this should be the current user
                       user: {
-                        image: "",
-                        name: "Current User",
-                        username: "Current User",
+                        image: session?.user?.image,
+                        name: session?.user?.name,
+                        username: session?.user?.email,
                       },
                     },
                   };
@@ -128,10 +130,9 @@ const FeedbackItemComments = ({ comments }: CommentsProps) => {
               </button>
             </div>
           )}
-          {/* REMOVING THIS FUNCTIONALITY FOR NOW */}
-          {/* {eachComment.replies?.map((reply) => (
+          {eachComment.replies?.map((reply) => (
             <FeedbackCommentReply key={reply.user.name} reply={reply} />
-          ))} */}
+          ))}
         </article>
       ))}
     </section>

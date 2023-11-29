@@ -1,6 +1,7 @@
 "use client";
 import { feedbackActions } from "@/app/store/feedback-slice";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
+import { useSession } from "next-auth/react";
 import { useRef, useState } from "react";
 
 type FeedbackItem = {
@@ -25,45 +26,51 @@ const NewComment = ({ feedbackId }: FeedbackItem) => {
     setCharCount(remainingCharacters);
   };
 
+  const { data: session, status } = useSession();
+
   return (
-    <form className="w-full bg-white rounded-lg shadow-lg mb-8 p-8">
-      <h1>Add Comment</h1>
-      <textarea
-        className="w-full bg-off-white rounded-lg h-24 mt-4 p-4"
-        ref={newCommentRef}
-        onChange={handleInputChange}
-        maxLength={255}
-      />
-      <div className="flex justify-between baseline mt-4">
-        <p>{charCount} Characters left</p>
-        <button
-          className="bg-purple text-white rounded-lg h-12 w-32"
-          role="button"
-          type="button"
-          onClick={() => {
-            const newUserComment = {
-              feedbackData: feedbackData,
-              currentPost: postToAddComment,
-              newComment: {
-                content: newCommentRef.current?.value,
-                id: Math.floor(Math.random() * Date.now()),
-                replies: [],
-                // this should be the current user
-                user: {
-                  image: "",
-                  name: "Current User",
-                  username: "Current User",
-                },
-              },
-            };
-            dispatch(feedbackActions.addNewComment(newUserComment));
-            newCommentRef.current!.value = "";
-          }}
-        >
-          Post Comment
-        </button>
-      </div>
-    </form>
+    <>
+      {status === "authenticated" && (
+        <form className="w-full bg-white rounded-lg shadow-lg mb-8 p-8">
+          <h1>Add Comment</h1>
+          <textarea
+            className="w-full bg-off-white rounded-lg h-24 mt-4 p-4"
+            ref={newCommentRef}
+            onChange={handleInputChange}
+            maxLength={255}
+          />
+          <div className="flex justify-between baseline mt-4">
+            <p>{charCount} Characters left</p>
+            <button
+              className="bg-purple text-white rounded-lg h-12 w-32"
+              role="button"
+              type="button"
+              onClick={() => {
+                const newUserComment = {
+                  feedbackData: feedbackData,
+                  currentPost: postToAddComment,
+                  newComment: {
+                    content: newCommentRef.current?.value,
+                    id: Math.floor(Math.random() * Date.now()),
+                    replies: [],
+                    // this should be the current user
+                    user: {
+                      image: session.user?.image,
+                      name: session.user?.name,
+                      username: session.user?.email,
+                    },
+                  },
+                };
+                dispatch(feedbackActions.addNewComment(newUserComment));
+                newCommentRef.current!.value = "";
+              }}
+            >
+              Post Comment
+            </button>
+          </div>
+        </form>
+      )}
+    </>
   );
 };
 
