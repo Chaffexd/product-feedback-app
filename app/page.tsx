@@ -33,6 +33,7 @@ export default function Home() {
   return (
     <>
     <title>Product Feedback App</title>
+    <meta name="description">The product feedback app that allows you to manage your teams flows and track what you're currently working on.</meta>
       {notification && (
         <Notification
           title={notification?.title}
