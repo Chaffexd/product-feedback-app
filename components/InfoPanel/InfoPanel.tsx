@@ -5,7 +5,7 @@ import Roadmap from "./Roadmap"
 
 const InfoPanel = () => {
   return (
-    <nav className="lg:w-1/4 flex lg:block justify-between sm:gap-4 md:h-48 flex-col sm:flex-row">
+    <nav className="lg:w-2/6 flex lg:block justify-between sm:gap-4 md:h-48 flex-col sm:flex-row">
         <Logo />
         <Categories />
         <Roadmap />
