@@ -1,9 +1,11 @@
+"use client"
 import FeedbackItem from "@/components/Feed/FeedbackItem";
 import FeedbackItemHeader from "@/components/Feed/FeedbackItemHeader";
 import NewComment from "@/components/Feed/NewComment";
 import EditModal from "@/components/UI/EditModal";
+import { Metadata } from "next";
 
-export async function generateStaticParams() {
+/* export async function generateStaticParams() {
   const response = await fetch(
     "https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests.json"
   );
@@ -61,6 +63,11 @@ export async function generateMetadata({
     title: foundItem.title,
     description: foundItem.description,
   };
+} */
+
+const metadata: Metadata = {
+  title: "Test",
+  description: "Description"
 }
 
 const FeedbackDetailPage = async ({
