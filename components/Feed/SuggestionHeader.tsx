@@ -5,7 +5,7 @@ import { useState } from "react";
 import { uiActions } from "@/app/store/ui-slice";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { filterActions } from "@/app/store/filter-slice";
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 const SuggestionHeader = () => {
@@ -34,7 +34,7 @@ const SuggestionHeader = () => {
   console.log("STATUS LOG IN", session, status);
 
   return (
-    <form className="w-full bg-darker-navy h-20 rounded-lg flex justify-between items-center text-white px-4 mb-4">
+    <form className="w-full bg-darker-navy h-20 sm:rounded-lg flex justify-between items-center text-white sm:px-4 px-2 mb-4">
       <div className="flex items-center">
         <i className="mr-4">
           <IconSuggestion />
@@ -48,7 +48,7 @@ const SuggestionHeader = () => {
             <button
               type="button"
               onClick={dropdownHandler}
-              className="flex items-center mr-2"
+              className="flex items-center sm:mr-2"
             >
               {selectedFilter}
             </button>
@@ -106,7 +106,7 @@ const SuggestionHeader = () => {
         </div>
       ) : status === "loading" || status === "unauthenticated" ? (
         <button
-          className="bg-purple rounded-lg h-12 w-40"
+          className="bg-purple rounded-lg h-12 w-3/12"
           onClick={() => router.push('/api/auth/signin')}
         >
           Sign In

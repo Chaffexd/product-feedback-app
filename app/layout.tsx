@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} px-24 pt-20 flex gap-8 bg-grey`}>
+      <body className={`${inter.className} xl:px-52 px-32 sm:pt-20 flex lg:flex-row flex-col gap-8 bg-grey sm:px-16 px-0 py-0`}>
         <SessionProvider>
           <Providers>{children}</Providers>
         </SessionProvider>

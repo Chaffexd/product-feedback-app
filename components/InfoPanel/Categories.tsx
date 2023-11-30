@@ -40,7 +40,7 @@ const Categories = () => {
   };
 
   return (
-    <div className="rounded-lg bg-white p-4 h-auto gap-2 mb-4 box-border flex flex-wrap items-center">
+    <div className="sm:rounded-lg bg-white p-4 sm:w-4/12 md:h-40 lg:h-auto lg:w-auto h-auto gap-2 mb-4 box-border flex flex-wrap items-center">
       {categories.map((category) => (
         <Button
           key={category.id}

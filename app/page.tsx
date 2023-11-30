@@ -43,7 +43,7 @@ export default function Home() {
       )}
       <Modal />
       <InfoPanel />
-      <main className="w-3/4">
+      <main className="lg:w-full sm:-mt-8 lg:mt-0">
         <Feed />
       </main>
     </>

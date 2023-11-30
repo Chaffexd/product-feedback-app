@@ -5,7 +5,7 @@ const Logo = () => {
   const { data: session, status } = useSession();
 
   return (
-    <div className="rounded-lg bg-navy p-4 h-40 flex flex-col justify-end mb-4">
+    <div className="sm:rounded-lg bg-navy p-4 md:h-40 lg:w-auto lg:h-40 flex flex-col justify-end sm:mb-4 w-full sm:w-4/12">
       {status === "authenticated" && (
         <div>
           <Image

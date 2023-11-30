@@ -9,7 +9,7 @@ const Roadmap = () => {
   const liveFeedback = allData.filter(feedback => feedback.status === 'live').length;
 
   return (
-    <div className="rounded-lg bg-white p-4 h-auto">
+    <div className="rounded-lg bg-white p-4 h-auto md:h-40 lg:w-auto sm:w-4/12">
       <div className="flex justify-between pb-4">
         <h1 className="font-bold">Roadmap</h1>
         <Link href={"/roadmap"} className="hover:underline hover:text-blue">
