@@ -5,6 +5,7 @@ import Providers from "./store/Providers";
 import { SessionProvider } from "next-auth/react";
 
 const inter = Inter({ subsets: ["latin"] });
+
 export default function RootLayout({
   children,
 }: {

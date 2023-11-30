@@ -32,6 +32,7 @@ export default function Home() {
 
   return (
     <>
+    <title>Product Feedback App</title>
       {notification && (
         <Notification
           title={notification?.title}
