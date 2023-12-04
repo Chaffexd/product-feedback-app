@@ -9,7 +9,7 @@ type RoadmapProps = {
 const RoadmapProgress = ({ plannedFeedback, inprogressFeedback, liveFeedback }: RoadmapProps) => {
 
   return (
-    <div className="w-full grid grid-cols-3 gap-8	pt-4 pb-8">
+    <div className="w-full grid lg:grid-cols-3 grid-cols-1 gap-8	pt-4 pb-8">
       <div>
         <h1 className="font-bold text-darker-navy">Planned ({ plannedFeedback.length })</h1>
         <p className="text-slate">Ideas for prioritized research</p>

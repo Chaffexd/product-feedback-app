@@ -4,21 +4,31 @@ import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { uiActions } from "@/app/store/ui-slice";
 import ArrowUp from "@/assets/shared/ArrowUp";
 import Comments from "@/assets/shared/Comments";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import FeedbackItemComments from "./FeedbackItemComments";
-import { useRouter } from "next/navigation";
+import { feedbackActions } from "@/app/store/feedback-slice";
+import { useSession } from "next-auth/react";
+import LogInModal from "../UI/LogInModal";
 
 type FeedbackItem = {
   feedbackId: number;
 };
 
 const FeedbackItem = ({ feedbackId }: FeedbackItem) => {
+  const [showModal, setShowModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const feedbackData = useAppSelector((state) => state.feedback);
   const isInitialPageLoad = useAppSelector(
     (state) => state.ui.isInitialPageLoad
   );
 
+  const openModal = () => {
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
 
   const singleFeedbackItem = feedbackData.feedback.filter(
     (item) => item.id === Number(feedbackId)
@@ -26,23 +36,33 @@ const FeedbackItem = ({ feedbackId }: FeedbackItem) => {
 
   useEffect(() => {
     if (isInitialPageLoad) {
-      console.log(feedbackData.changed)
-      console.log("DOES THIS TRIGGER?")
       dispatch(fetchFeedbackData());
       dispatch(uiActions.initialPageLoad(false));
       return;
     }
   }, [dispatch, isInitialPageLoad, feedbackData.changed]);
 
+  const { data: session, status } = useSession();
+
+  const upvoteSubmission = () => {
+    console.log('THE PIECE TO UPVOTE ===', singleFeedbackItem[0].upvotes)
+    if (status === 'authenticated') {
+      dispatch(feedbackActions.upvoteFeedbackInFirebaseAsync(feedbackId));
+    } else {
+      openModal();
+    }
+  };
+
   return (
     <>
+      {showModal && <LogInModal message="Please log in to cast an upvote!" onClose={closeModal} />}
       <article className="w-full bg-white shadow-md p-8 rounded-lg my-4 flex justify-between items-center">
         <div className="flex">
           <div className="mr-8 flex justify-center w-12">
-            <span className="bg-grey p-2 h-14 rounded-lg flex flex-col items-center">
+            <button className="bg-grey p-2 h-14 rounded-lg flex flex-col items-center" onClick={upvoteSubmission}>
               <ArrowUp />
               <span className="mt-2">{singleFeedbackItem[0]?.upvotes}</span>
-            </span>
+            </button>
           </div>
           <div>
             <h1 className="font-bold text-slate mb-4">

@@ -18,11 +18,10 @@ export const fetchFeedbackData = () => {
       const response = await fetch(
         "https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests.json",
         {
-          headers: { 
+          headers: {
             "Content-Type": "application/json",
             "Cache-Control": "no-cache",
-        },
-          
+          },
         }
       );
 
@@ -195,5 +194,26 @@ export const deletePostData = async (postId: number) => {
     }
   } catch (error) {
     console.error("Error deleting post", error);
+  }
+};
+
+export const upvoteInDatabase = async (feedbackId: number, updatedUpvotes: number) => {
+  const { firebaseKey } = await findFeedbackItem(feedbackId);
+
+  try {
+    const response = await fetch(
+      `https://project-feedback-app-3bf2b-default-rtdb.europe-west1.firebasedatabase.app/productRequests/${firebaseKey}.json`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ upvotes: updatedUpvotes })
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to upvote");
+    }
+  } catch (error) {
+    console.error("Error upvoting", error);
   }
 };

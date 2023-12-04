@@ -6,7 +6,9 @@ import {
   sendNewFeedback,
   updateCommentInDatabase,
   updatePostData,
+  upvoteInDatabase,
 } from "./feedback-action";
+import { RootState } from "./store";
 
 type FeedbackState = {
   feedback: Feedback[];
@@ -37,6 +39,31 @@ export const addNewCommentAsync = createAsyncThunk(
     };
     await addNewCommentToDatabase(postIdToUpdate, newPostComments);
     return newPostComments;
+  }
+);
+
+export const upvoteFeedbackInFirebaseAsync = createAsyncThunk(
+  "feedback/upvoteFeedbackInFirebase",
+  async (feedbackId: number, thunkAPI) => {
+    try {
+      // Fetch the updated feedback item from the current state
+      const state = thunkAPI.getState() as RootState; // Assume RootState is your root state type
+      const feedbackItem = state.feedback.feedback.find(
+        (item) => item.id === Number(feedbackId)
+      );
+
+      if (feedbackItem) {
+        const updatedUpvotes = feedbackItem.upvotes + 1;
+
+        await upvoteInDatabase(feedbackId, updatedUpvotes);
+        return feedbackId;
+      } else {
+        throw new Error(`Feedback item with id ${feedbackId} not found`);
+      }
+    } catch (error) {
+      // Handle error as needed
+      throw error;
+    }
   }
 );
 
@@ -156,8 +183,8 @@ const feedbackSlice = createSlice({
       return {
         ...state,
         feedback: updatedFeedback,
-        changed: true
-      }
+        changed: true,
+      };
     },
     updatePost(state, action) {
       const { currentPostDetail } = action.payload;
@@ -184,7 +211,7 @@ const feedbackSlice = createSlice({
       };
     },
     deletePost(state, action) {
-      const { feedbackId, allPosts } = action.payload;
+      const { feedbackId } = action.payload;
       // console.log("FEEDBACK ID", feedbackId);
       // console.log("ALL POSTS ============ ", allPosts);
 
@@ -207,14 +234,44 @@ const feedbackSlice = createSlice({
     clearState(state) {
       state.changed = false;
     },
+    upvoteFeedback(state, action) {
+      const feedbackId = action.payload;
+      const feedbackIndex = state.feedback.findIndex(
+        (item) => item.id === Number(feedbackId)
+      );
+
+      if (feedbackIndex !== -1) {
+        state.feedback[feedbackIndex].upvotes += 1;
+        state.changed = true;
+
+        // upvoteInDatabase(feedbackId, updatedUpvotes)
+      }
+
+      return state;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(addNewCommentAsync.fulfilled, (state, action) => {
       state.changed = true;
       state.feedback.push(action.payload);
     });
+    builder.addCase(
+      upvoteFeedbackInFirebaseAsync.fulfilled,
+      (state, action) => {
+        state.changed = true;
+        const feedbackId = action.payload;
+        const feedbackIndex = state.feedback.findIndex(
+          (item) => item.id === Number(feedbackId)
+        );
+  
+        if (feedbackIndex !== -1) {
+          state.feedback[feedbackIndex].upvotes += 1;
+          state.changed = true;
+        }
+      }
+    );
   },
 });
 
-export const feedbackActions = { ...feedbackSlice.actions, addNewCommentAsync };
+export const feedbackActions = { ...feedbackSlice.actions, addNewCommentAsync, upvoteFeedbackInFirebaseAsync };
 export default feedbackSlice;

@@ -1,3 +1,4 @@
+import { Feedback } from "@/components/Models/models";
 import { createSlice } from "@reduxjs/toolkit";
 
 type UiState = {
