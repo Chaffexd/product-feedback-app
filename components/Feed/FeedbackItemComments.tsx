@@ -8,6 +8,7 @@ import { feedbackActions } from "@/app/store/feedback-slice";
 import { useEffect, useRef } from "react";
 import DefaultAvatar from "../../assets/default-avatar.jpeg";
 import { useSession } from "next-auth/react";
+import { fetchFeedbackData } from "@/app/store/feedback-action";
 
 type CommentsProps = {
   comments: Feedback[];
@@ -31,9 +32,9 @@ const FeedbackItemComments = ({ comments }: CommentsProps) => {
 
   useEffect(() => {
     if (isInitialPageLoad || feedbackData.changed) {
-      console.log(feedbackData.changed);
+      console.log("FEEDBACK", feedbackData.changed);
       console.log("DOES THIS TRIGGER?");
-      // dispatch(fetchFeedbackData());
+      dispatch(fetchFeedbackData());
       dispatch(uiActions.initialPageLoad(false));
       return;
     }

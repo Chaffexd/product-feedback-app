@@ -34,7 +34,7 @@ const SuggestionHeader = () => {
   console.log("STATUS LOG IN", session, status);
 
   return (
-    <form className="w-full bg-darker-navy h-20 sm:rounded-lg flex justify-between items-center text-white sm:px-4 px-2 mb-4">
+    <form className="w-full bg-darker-navy h-28 sm:h-24 md:h-20 sm:rounded-lg flex flex-wrap justify-between items-center text-white sm:px-4 px-2 mb-4">
       <div className="flex items-center">
         <i className="mr-4">
           <IconSuggestion />

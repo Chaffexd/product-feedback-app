@@ -34,7 +34,7 @@ const FeedbackCommentReply = ({ reply }: FeedbackCommentProps) => {
         </div>
       </div>
       <p className="text-slate">{reply.content}</p>
-      {isReplying && (
+      {/* {isReplying && (
         <div className="w-full flex h-20 pt-2 gap-4 justify-between">
           <textarea
             className="bg-off-white p-4 w-5/6 rounded-lg"
@@ -43,7 +43,7 @@ const FeedbackCommentReply = ({ reply }: FeedbackCommentProps) => {
           />
           <button className="bg-purple text-white rounded-lg h-12 w-28">Post Reply</button>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

@@ -89,14 +89,16 @@ const feedbackSlice = createSlice({
       // Clone the currentState array
       const updatedState = currentState.slice();
 
+      // Finds the current post to update
       const commentToUpdate = updatedState.find(
         (item: any) => item.id === findPostData
       );
 
-      // Clone the state to update
+      // Clone the post to update
       const stateToUpdate = { ...commentToUpdate };
       console.log("STATE TO UPDATE", stateToUpdate)
 
+      // if it has a replies array, add to that array
       if (currentPost && Array.isArray(currentPost.replies)) {
         console.log(`Current post has replies`);
 
@@ -123,6 +125,7 @@ const feedbackSlice = createSlice({
         // Update the cloned state with the modified comments array
         stateToUpdate.comments = updatedComments;
       } else {
+        // otherwise, create the replies array and add a comment
         console.log(`Current post does not have any replies`);
 
         const commentToUpdateIndex = stateToUpdate.comments.findIndex(
@@ -149,10 +152,12 @@ const feedbackSlice = createSlice({
 
       // Update the cloned state array
       updatedState[findPostData] = stateToUpdate;
-      console.log("UPDATED STATE W INDEX", updatedState[findPostData])
+      //console.log("UPDATED STATE W INDEX", updatedState[findPostData])
 
       // Update the state in an immutable way LOCALLY
-      state.feedback = updatedState;
+      const test = state.feedback = updatedState;
+      console.log("DO YOU UPDATE?", test)
+      state.feedback = [...updatedState];
       state.changed = true;
 
       // update the database at the same time
@@ -163,7 +168,6 @@ const feedbackSlice = createSlice({
     },
     addNewComment(state, action) {
       const { newComment, currentPost, feedbackData } = action.payload;
-      // we -1 because the index in the firebase is different to what is local
       console.log("CURRENT POST=====", currentPost[0].id);
       const postIdToUpdate = currentPost[0].id;
       // if there are no comments, one will be created
