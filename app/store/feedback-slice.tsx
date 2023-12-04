@@ -61,7 +61,6 @@ export const upvoteFeedbackInFirebaseAsync = createAsyncThunk(
         throw new Error(`Feedback item with id ${feedbackId} not found`);
       }
     } catch (error) {
-      // Handle error as needed
       throw error;
     }
   }
@@ -84,13 +83,19 @@ const feedbackSlice = createSlice({
     },
     updateComment: (state, action) => {
       const { newComment, currentPost, index, currentState } = action.payload;
-      const findPostData = index[0].id - 1;
+      const findPostData = index[0].id; // this is the post ID
+      console.log("cURRENT STATE", findPostData)
 
       // Clone the currentState array
       const updatedState = currentState.slice();
 
+      const commentToUpdate = updatedState.find(
+        (item: any) => item.id === findPostData
+      );
+
       // Clone the state to update
-      const stateToUpdate = { ...updatedState[findPostData] };
+      const stateToUpdate = { ...commentToUpdate };
+      console.log("STATE TO UPDATE", stateToUpdate)
 
       if (currentPost && Array.isArray(currentPost.replies)) {
         console.log(`Current post has replies`);
@@ -144,6 +149,7 @@ const feedbackSlice = createSlice({
 
       // Update the cloned state array
       updatedState[findPostData] = stateToUpdate;
+      console.log("UPDATED STATE W INDEX", updatedState[findPostData])
 
       // Update the state in an immutable way LOCALLY
       state.feedback = updatedState;
@@ -178,7 +184,6 @@ const feedbackSlice = createSlice({
           ? { ...post, comments: [...currentComments, newComment] }
           : post
       );
-
       addNewCommentToDatabase(postIdToUpdate, newPostComments);
       return {
         ...state,

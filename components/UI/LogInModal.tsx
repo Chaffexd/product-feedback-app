@@ -1,5 +1,4 @@
 import { useAppDispatch } from "@/app/store/hooks";
-import { uiActions } from "@/app/store/ui-slice";
 
 type LoginModalProps = {
   message: string;
